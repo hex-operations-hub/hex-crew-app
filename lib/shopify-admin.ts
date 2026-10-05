@@ -42,6 +42,7 @@ export async function adminGraphql<T>(shop: string, query: string, variables = {
 export type CrewCustomer = {
   firstName: string | null;
   displayName: string;
+  email: string | null;
   tags: string[];
 };
 
@@ -49,7 +50,7 @@ export async function getCustomer(shop: string, customerId: string): Promise<Cre
   const data = await adminGraphql<{ customer: CrewCustomer | null }>(
     shop,
     `query CrewCustomer($id: ID!) {
-      customer(id: $id) { firstName displayName tags }
+      customer(id: $id) { firstName displayName email tags }
     }`,
     { id: `gid://shopify/Customer/${customerId}` },
   );

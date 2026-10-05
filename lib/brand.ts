@@ -4,8 +4,9 @@
 export const brand = {
   name: "HEX Energy",
   programme: "HEX Crew",
-  // Liquid template rendered by Shopify inside the store's theme.
-  portalTemplate: "portal/hex/portal.liquid",
+  // Portal template (portal/<key>/portal.liquid), rendered by Shopify inside
+  // the store's theme. Register new keys in app/proxy/[[...path]]/route.ts.
+  portal: "hex",
   // Go-live visibility per tab (Matt's decisions, Sept 2026).
   //   leaderboard: "show" | "blur" | "hide"   -> live but blurred
   //   creatorView: "show" | "hide"            -> phase 2
