@@ -25,18 +25,27 @@ async function getToken(shop: string): Promise<string> {
 }
 
 export async function adminGraphql<T>(shop: string, query: string, variables = {}): Promise<T> {
-  const res = await fetch(`https://${shop}/admin/api/${API_VERSION}/graphql.json`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Access-Token": await getToken(shop),
-    },
-    body: JSON.stringify({ query, variables }),
-  });
-  if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
-  const { data, errors } = await res.json();
+  const call = async () => {
+    const res = await fetch(`https://${shop}/admin/api/${API_VERSION}/graphql.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": await getToken(shop),
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+    if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
+    return (await res.json()) as { data: T; errors?: { message: string; extensions?: { code?: string } }[] };
+  };
+
+  let { data, errors } = await call();
+  // A cached token predates any newly granted scopes; get a fresh one and retry once.
+  if (errors?.some((e) => e.extensions?.code === "ACCESS_DENIED") && tokens.has(shop)) {
+    tokens.delete(shop);
+    ({ data, errors } = await call());
+  }
   if (errors?.length) throw new Error(`GraphQL errors: ${JSON.stringify(errors)}`);
-  return data as T;
+  return data;
 }
 
 export type CrewCustomer = {
