@@ -31,3 +31,36 @@ export async function recordCreatorVisit(shop: string, customerId: string): Prom
   }
   return data;
 }
+
+export type NewPitch = {
+  shop: string;
+  shopify_customer_id: number;
+  creator_name: string | null;
+  creator_email: string | null;
+  category: string;
+  suggested_value: string | null;
+  title: string;
+  body: string;
+};
+
+// Saves a pitch and returns its id, or null if Supabase isn't available.
+export async function savePitch(pitch: NewPitch): Promise<string | null> {
+  const supabase = db();
+  if (!supabase) return null;
+  const { data, error } = await supabase.from("pitches").insert(pitch).select("id").single<{ id: string }>();
+  if (error) {
+    console.error("savePitch failed", error);
+    return null;
+  }
+  return data.id;
+}
+
+export async function markPitchClickUp(id: string, result: { taskId?: string; error?: string }) {
+  const supabase = db();
+  if (!supabase) return;
+  const { error } = await supabase
+    .from("pitches")
+    .update({ clickup_task_id: result.taskId ?? null, clickup_error: result.error ?? null })
+    .eq("id", id);
+  if (error) console.error("markPitchClickUp failed", error);
+}

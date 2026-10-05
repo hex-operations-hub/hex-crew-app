@@ -955,8 +955,8 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
     <p class="lede">Every creator can pitch a mission, an activation, a flavour, or a collab target. The community votes weekly. The pitches that float to the top — and that we end up shipping — get paid out to the creator who proposed them. From $500 for a sharp mission idea to $5k+ for a collab that lands.</p>
 
     <div class="card" style="padding:36px;background:var(--surface-2);margin:24px 0 32px;border:2px dashed var(--border-strong);">
-      {% form 'contact', id: 'HexCrewPitchForm' %}
-        <input type="hidden" name="contact[Program]" value="HEX Crew pitch">
+      <form method="post" action="{{ crew_path_prefix }}/pitch" id="HexCrewPitchForm" accept-charset="UTF-8">
+        <input type="hidden" name="crew_token" value="{{ crew_form_token }}">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:14px;">
           <div>
             <div style="font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Submit a pitch</div>
@@ -964,25 +964,26 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
           </div>
           <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;color:var(--mute);">Native Shopify submission</div>
         </div>
-        {% if form.posted_successfully? %}
-          <div class="callout" role="status" style="margin-bottom:18px;"><strong>Pitch received.</strong> HEX will review it from the store contact inbox.</div>
+        {% if crew_pitch_status == 'sent' %}
+          <div class="callout" role="status" style="margin-bottom:18px;"><strong>Pitch received.</strong> HEX will review it and get back to you.</div>
+        {% elsif crew_pitch_status == 'error' %}
+          <div class="callout" role="alert" style="margin-bottom:18px;"><strong>That didn't send.</strong> {{ crew_pitch_error }}</div>
         {% endif %}
-        {{ form.errors | default_errors }}
         <div class="form-row">
           <label for="HexCrewPitchEmail">Email</label>
-          <input id="HexCrewPitchEmail" type="email" name="contact[email]" value="{{ customer.email | escape }}" readonly required>
+          <input id="HexCrewPitchEmail" type="email" value="{{ customer.email | escape }}" readonly>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label for="HexCrewPitchCategory">Category</label><input id="HexCrewPitchCategory" type="text" name="contact[Pitch category]" placeholder="Mission · Activation · Collab" required></div>
-          <div class="form-row"><label for="HexCrewPitchValue">Suggested value</label><input id="HexCrewPitchValue" type="text" name="contact[Suggested value]" placeholder="$500"></div>
+          <div class="form-row"><label for="HexCrewPitchCategory">Category</label><input id="HexCrewPitchCategory" type="text" name="pitch[category]" maxlength="100" placeholder="Mission · Activation · Collab" required></div>
+          <div class="form-row"><label for="HexCrewPitchValue">Suggested value</label><input id="HexCrewPitchValue" type="text" name="pitch[value]" maxlength="50" placeholder="$500"></div>
         </div>
-        <div class="form-row"><label for="HexCrewPitchTitle">Title</label><input id="HexCrewPitchTitle" type="text" name="contact[Pitch title]" placeholder="Give the idea a sharp name" required></div>
-        <div class="form-row"><label for="HexCrewPitchBody">The pitch</label><textarea id="HexCrewPitchBody" rows="4" name="contact[body]" placeholder="What happens, where it happens and why HEX should back it." required></textarea></div>
+        <div class="form-row"><label for="HexCrewPitchTitle">Title</label><input id="HexCrewPitchTitle" type="text" name="pitch[title]" maxlength="200" placeholder="Give the idea a sharp name" required></div>
+        <div class="form-row"><label for="HexCrewPitchBody">The pitch</label><textarea id="HexCrewPitchBody" rows="4" name="pitch[body]" maxlength="5000" placeholder="What happens, where it happens and why HEX should back it." required></textarea></div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:18px;flex-wrap:wrap;">
           <div style="font-size:12px;color:var(--mute);">This sends the idea to HEX. It does not automatically publish it to the board below.</div>
           <button class="btn btn-primary" type="submit">Submit pitch <span class="arrow">→</span></button>
         </div>
-      {% endform %}
+      </form>
     </div>
 
     <h3>Pitch-board concept</h3>
@@ -1722,5 +1723,6 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
     var saved = localStorage.getItem('hex_crew_v4_tab');
     if (saved) goTab(saved);
   } catch (error) {}
+  {% if crew_pitch_status != blank %}goTab('pitches');{% endif %}
 })();
 </script>
