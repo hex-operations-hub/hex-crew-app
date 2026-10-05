@@ -89,3 +89,58 @@ export async function markPitchClickUp(id: string, result: { taskId?: string; er
     .eq("id", id);
   if (error) console.error("markPitchClickUp failed", error);
 }
+
+export type NewApplication = {
+  shop: string;
+  shopify_customer_id: number | null;
+  name: string;
+  email: string;
+  tribe: string;
+  training_location: string;
+  quote: string | null;
+  quote_source: string | null;
+  content_link: string;
+};
+
+// True if the same email already applied in the last few minutes
+// (double-click or resubmitted form).
+export async function hasRecentApplication(shop: string, email: string): Promise<boolean> {
+  const supabase = db();
+  if (!supabase) return false;
+  const since = new Date(Date.now() - DUPLICATE_WINDOW_MINUTES * 60 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from("applications")
+    .select("id")
+    .eq("shop", shop)
+    .eq("email", email.toLowerCase())
+    .gte("created_at", since)
+    .limit(1);
+  if (error) {
+    console.error("hasRecentApplication failed", error);
+    return false;
+  }
+  return data.length > 0;
+}
+
+export async function saveApplication(application: NewApplication): Promise<string | null> {
+  const supabase = db();
+  if (!supabase) return null;
+  const { data, error } = await supabase.from("applications").insert(application).select("id").single<{ id: string }>();
+  if (error) {
+    console.error("saveApplication failed", error);
+    return null;
+  }
+  return data.id;
+}
+
+export async function markApplicationLink(
+  id: string,
+  link: { customerLink: string; customerId?: string | null; error?: string | null },
+) {
+  const supabase = db();
+  if (!supabase) return;
+  const update: Record<string, unknown> = { customer_link: link.customerLink, shopify_error: link.error ?? null };
+  if (link.customerId) update.shopify_customer_id = Number(link.customerId);
+  const { error } = await supabase.from("applications").update(update).eq("id", id);
+  if (error) console.error("markApplicationLink failed", error);
+}

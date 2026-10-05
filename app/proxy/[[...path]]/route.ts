@@ -1,11 +1,12 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { brand } from "@/lib/brand";
-import { createPitchTask } from "@/lib/clickup";
-import { findRecentDuplicatePitch, markPitchClickUp, recordCreatorVisit, savePitch, type NewPitch } from "@/lib/db";
-import { isValidFormToken, issueFormToken } from "@/lib/form-token";
+import { recordCreatorVisit } from "@/lib/db";
+import { issueFormToken } from "@/lib/form-token";
+import { submitOnboarding } from "@/lib/forms/onboarding";
+import { submitPitch } from "@/lib/forms/pitch";
+import type { FormOutcome, ProxyRequest } from "@/lib/forms/types";
 import { isValidProxySignature } from "@/lib/proxy-signature";
-import { getCustomer } from "@/lib/shopify-admin";
 
 // Shopify forwards hexenergy.au/apps/crew/* here, adding shop,
 // logged_in_customer_id, path_prefix, timestamp and signature to the query.
@@ -27,9 +28,13 @@ async function portalTemplate() {
   return template;
 }
 
-type Proxy = { shop: string; customerId: string | null; pathPrefix: string };
+// POST /apps/crew/<form> -> handler, and the portal tab to show afterwards.
+const FORMS = {
+  pitch: { handler: submitPitch, tab: "pitches", liquid: "pitch" },
+  onboarding: { handler: submitOnboarding, tab: "onboarding", liquid: "onboarding" },
+} as const;
 
-function verify(request: Request): Proxy | Response {
+function verify(request: Request): ProxyRequest | Response {
   const params = new URL(request.url).searchParams;
   if (!isValidProxySignature(params, process.env.SHOPIFY_API_SECRET ?? "")) {
     return plain("This page only works through the HEX store.", 401);
@@ -55,69 +60,16 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const proxy = verify(request);
   if (proxy instanceof Response) return proxy;
-  if (!new URL(request.url).pathname.replace(/\/$/, "").endsWith("/pitch")) {
-    return plain("Not found.", 404);
-  }
-  return render(proxy, await submitPitch(proxy, await request.formData()));
+  const name = new URL(request.url).pathname.replace(/\/$/, "").split("/").pop() ?? "";
+  if (!Object.hasOwn(FORMS, name)) return plain("Not found.", 404);
+  const form = FORMS[name as keyof typeof FORMS];
+  // A missing or malformed body is treated as an empty form (fails validation).
+  const body = await request.formData().catch(() => new FormData());
+  const outcome = await form.handler(proxy, body);
+  return render(proxy, { ...form, outcome });
 }
 
-type PitchOutcome = { status: "sent" } | { status: "error"; message: string };
-
-const LIMITS = { category: 100, value: 50, title: 200, body: 5000 };
-
-async function submitPitch(proxy: Proxy, form: FormData): Promise<PitchOutcome> {
-  const error = (message: string): PitchOutcome => ({ status: "error", message });
-  if (!proxy.customerId) return error("Sign in to send a pitch.");
-  if (!isValidFormToken(String(form.get("crew_token") ?? ""), proxy.customerId)) {
-    return error("This form expired. Refresh the page and try again.");
-  }
-
-  const field = (name: keyof typeof LIMITS) => String(form.get(`pitch[${name}]`) ?? "").trim().slice(0, LIMITS[name]);
-  const pitch = { category: field("category"), value: field("value"), title: field("title"), body: field("body") };
-  if (!pitch.category || !pitch.title || !pitch.body) return error("Category, title and pitch are required.");
-
-  const customer = await getCustomer(proxy.shop, proxy.customerId).catch(() => null);
-  const name = customer?.displayName ?? null;
-  const email = customer?.email ?? null;
-
-  const record: NewPitch = {
-    shop: proxy.shop,
-    shopify_customer_id: Number(proxy.customerId),
-    creator_name: name,
-    creator_email: email,
-    category: pitch.category,
-    suggested_value: pitch.value || null,
-    title: pitch.title,
-    body: pitch.body,
-  };
-  if (await findRecentDuplicatePitch(record)) return { status: "sent" };
-
-  const id = await savePitch(record);
-  if (!id) return error("We couldn't save your pitch. Please try again in a minute.");
-
-  const task = await createPitchTask({
-    name: `[Pitch] ${pitch.title}`,
-    markdown: [
-      `**Creator:** ${name ?? "Unknown"}${email ? ` (${email})` : ""}`,
-      `**Category:** ${pitch.category}`,
-      `**Suggested value:** ${pitch.value || "Not given"}`,
-      "",
-      pitch.body,
-      "",
-      `---`,
-      `Submitted via ${brand.programme} portal on ${proxy.shop}. Pitch ID: ${id}`,
-    ].join("\n"),
-  });
-  if ("id" in task) await markPitchClickUp(id, { taskId: task.id });
-  else {
-    console.error("ClickUp task not created", task.error);
-    await markPitchClickUp(id, { error: task.error });
-  }
-  // The pitch is saved either way; ClickUp failures are retried from Supabase.
-  return { status: "sent" };
-}
-
-async function render(proxy: Proxy, pitch?: PitchOutcome) {
+async function render(proxy: ProxyRequest, submitted?: { tab: string; liquid: string; outcome: FormOutcome }) {
   // Liquid has no string escaping, so drop characters that could end the
   // string or open a tag. Values come from our code or Shopify's signed query.
   const assign = (name: string, value: string) => `{% assign ${name} = "${value.replace(/["{}%]/g, "")}" %}`;
@@ -125,12 +77,16 @@ async function render(proxy: Proxy, pitch?: PitchOutcome) {
     assign("crew_leaderboard", brand.tabs.leaderboard),
     assign("crew_creator_view", brand.tabs.creatorView),
     assign("crew_path_prefix", proxy.pathPrefix),
-    assign("crew_form_token", proxy.customerId ? issueFormToken(proxy.customerId) : ""),
-    assign("crew_pitch_status", pitch?.status ?? ""),
-    assign("crew_pitch_error", pitch?.status === "error" ? pitch.message : ""),
-  ].join("");
+    assign("crew_form_token", issueFormToken(proxy.customerId ?? "anon")),
+    assign("crew_return_tab", submitted?.tab ?? ""),
+  ];
+  if (submitted) {
+    const { outcome, liquid } = submitted;
+    settings.push(assign(`crew_${liquid}_status`, outcome.status));
+    if (outcome.status === "error") settings.push(assign(`crew_${liquid}_error`, outcome.message));
+  }
 
-  return new Response(settings + (await portalTemplate()), {
+  return new Response(settings.join("") + (await portalTemplate()), {
     headers: { "Content-Type": "application/liquid", "Cache-Control": "no-store" },
   });
 }
