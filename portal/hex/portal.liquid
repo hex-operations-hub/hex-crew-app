@@ -1512,12 +1512,14 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
       <p style="font-size:15px;">You're not making content for HEX — you're filming what you already do, dropping it in your folder, and letting the system match it to missions and prizes. The 10-clip quota is a minimum because volume + variety wins the algorithm. Past that: keep going if you want, stop if life gets in the way. The platform doesn't punish you for being human.</p>
     </div>
 
-    {% form 'contact', id: 'HexCrewOnboardingForm' %}
-      <input type="hidden" name="contact[Program]" value="HEX Crew onboarding">
-      {% if form.posted_successfully? %}
-        <div class="callout" role="status" style="margin-bottom:24px;"><strong>Application received.</strong> HEX will review the intake from the store contact inbox. Affiliate access remains in GoAffPro.</div>
+    <form method="post" action="{{ crew_path_prefix }}/onboarding" id="HexCrewOnboardingForm" accept-charset="UTF-8">
+      <input type="hidden" name="crew_token" value="{{ crew_form_token }}">
+      <input type="text" name="crew_website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+      {% if crew_onboarding_status == 'sent' %}
+        <div class="callout" role="status" style="margin-bottom:24px;"><strong>Application received.</strong> HEX will review your intake. Affiliate access remains in GoAffPro.</div>
+      {% elsif crew_onboarding_status == 'error' %}
+        <div class="callout" role="alert" style="margin-bottom:24px;"><strong>That didn't send.</strong> {{ crew_onboarding_error }}</div>
       {% endif %}
-      {{ form.errors | default_errors }}
 
     <div class="onb-stepper">
       <div class="onb-step active" data-step="1"><div class="step-n">Clip 01</div><div class="step-name">Athlete intro</div></div>
@@ -1543,11 +1545,11 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
         </ul>
         <div class="pro-tip"><strong>Pro tip.</strong> Filmed at your training spot at first light. Cott pier, Trigg point, the F45 carpark before class. Locals immediately know you're real.</div>
       </div>
-      <div class="form-row"><label for="HexCrewName">Name (as you want it shown)</label><input id="HexCrewName" type="text" name="contact[name]" value="{{ customer.name | escape }}" placeholder="e.g. Tahlia Skye" autocomplete="name" required></div>
-      <div class="form-row"><label for="HexCrewEmail">Email</label><input id="HexCrewEmail" type="email" name="contact[email]" value="{{ customer.email | escape }}" placeholder="you@example.com" autocomplete="email" required></div>
+      <div class="form-row"><label for="HexCrewName">Name (as you want it shown)</label><input id="HexCrewName" type="text" name="apply[name]" maxlength="100" value="{{ customer.name | escape }}" placeholder="e.g. Tahlia Skye" autocomplete="name" required></div>
+      <div class="form-row"><label for="HexCrewEmail">Email</label><input id="HexCrewEmail" type="email" name="apply[email]" maxlength="200" value="{{ customer.email | escape }}"{% if customer %} readonly{% endif %} placeholder="you@example.com" autocomplete="email" required></div>
       <div class="form-grid-2">
-        <div class="form-row"><label for="HexCrewTribe">Tribe</label><input id="HexCrewTribe" type="text" name="contact[Tribe]" placeholder="Trail · Lift · Combat · Night · Grind" required></div>
-        <div class="form-row"><label for="HexCrewTraining">Where you train</label><input id="HexCrewTraining" type="text" name="contact[Training location]" placeholder="Cottesloe · Scrappy MMA · F45 Mt Lawley" required></div>
+        <div class="form-row"><label for="HexCrewTribe">Tribe</label><input id="HexCrewTribe" type="text" name="apply[tribe]" maxlength="50" placeholder="Trail · Lift · Combat · Night · Grind" required></div>
+        <div class="form-row"><label for="HexCrewTraining">Where you train</label><input id="HexCrewTraining" type="text" name="apply[training]" maxlength="150" placeholder="Cottesloe · Scrappy MMA · F45 Mt Lawley" required></div>
       </div>
       <button type="button" class="btn btn-primary" onclick="nextStep()">Next — Clip 02 <span class="arrow">→</span></button>
     </div>
@@ -1634,12 +1636,12 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
         </ul>
         <div class="pro-tip"><strong>Pro tip.</strong> The best are local and specific. "The Doctor always shows up." "Pull yourself off the line." "If you can hear the crowd, you're not in deep enough."</div>
       </div>
-      <div class="form-row"><label for="HexCrewQuote">The quote</label><textarea id="HexCrewQuote" rows="2" name="contact[Quote]" placeholder="e.g. The Doctor always shows up."></textarea></div>
-      <div class="form-row"><label for="HexCrewQuoteSource">Who said it</label><input id="HexCrewQuoteSource" type="text" name="contact[Quote source]" placeholder="My coach · My nan · Me · A song"></div>
-      <div class="form-row"><label for="HexCrewContentLink">Photo or video folder link</label><input id="HexCrewContentLink" type="url" name="contact[Content link]" placeholder="Shared Drive, Dropbox or WeTransfer link" required><div style="font-size:12px;color:var(--mute);margin-top:6px;">Set link access so HEX can view the files.</div></div>
+      <div class="form-row"><label for="HexCrewQuote">The quote</label><textarea id="HexCrewQuote" rows="2" name="apply[quote]" maxlength="300" placeholder="e.g. The Doctor always shows up."></textarea></div>
+      <div class="form-row"><label for="HexCrewQuoteSource">Who said it</label><input id="HexCrewQuoteSource" type="text" name="apply[quote_source]" maxlength="100" placeholder="My coach · My nan · Me · A song"></div>
+      <div class="form-row"><label for="HexCrewContentLink">Photo or video folder link</label><input id="HexCrewContentLink" type="url" name="apply[content_link]" maxlength="500" placeholder="Shared Drive, Dropbox or WeTransfer link" required><div style="font-size:12px;color:var(--mute);margin-top:6px;">Set link access so HEX can view the files.</div></div>
       <button class="btn btn-primary" type="submit">Submit my athlete card <span class="arrow">→</span></button>
     </div>
-    {% endform %}
+    </form>
   </div>
 </section>
 
@@ -1723,8 +1725,8 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
     var saved = localStorage.getItem('hex_crew_v4_tab');
     if (saved) goTab(saved);
   } catch (error) {}
-  {% if crew_pitch_status != blank %}
-  goTab('pitches');
+  {% if crew_return_tab != blank %}
+  goTab('{{ crew_return_tab }}');
   // Replace the form-post entry so a refresh reloads the portal instead of re-sending the pitch.
   try { history.replaceState(null, '', '{{ crew_path_prefix }}'); } catch (error) {}
   {% endif %}

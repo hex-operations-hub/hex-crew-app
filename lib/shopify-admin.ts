@@ -46,13 +46,89 @@ export type CrewCustomer = {
   tags: string[];
 };
 
+const customerGid = (id: string) => `gid://shopify/Customer/${id}`;
+
 export async function getCustomer(shop: string, customerId: string): Promise<CrewCustomer | null> {
-  const data = await adminGraphql<{ customer: CrewCustomer | null }>(
+  const data = await adminGraphql<{
+    customer: (Omit<CrewCustomer, "email"> & { defaultEmailAddress: { emailAddress: string } | null }) | null;
+  }>(
     shop,
     `query CrewCustomer($id: ID!) {
-      customer(id: $id) { firstName displayName email tags }
+      customer(id: $id) { firstName displayName tags defaultEmailAddress { emailAddress } }
     }`,
-    { id: `gid://shopify/Customer/${customerId}` },
+    { id: customerGid(customerId) },
   );
-  return data.customer;
+  if (!data.customer) return null;
+  const { defaultEmailAddress, ...rest } = data.customer;
+  return { ...rest, email: defaultEmailAddress?.emailAddress ?? null };
+}
+
+type UserError = { field: string[] | null; message: string };
+
+function assertNoUserErrors(action: string, errors: UserError[]) {
+  if (errors.length) throw new Error(`${action}: ${errors.map((e) => e.message).join("; ")}`);
+}
+
+// Returns the numeric ID of the customer with this email, if any.
+export async function findCustomerIdByEmail(shop: string, email: string): Promise<string | null> {
+  const data = await adminGraphql<{ customers: { nodes: { id: string }[] } }>(
+    shop,
+    `query CrewFindCustomer($query: String!) {
+      customers(first: 1, query: $query) { nodes { id } }
+    }`,
+    { query: `email:"${email.replace(/["\\]/g, "")}"` },
+  );
+  return data.customers.nodes[0]?.id.split("/").pop() ?? null;
+}
+
+export type CrewProfileField = { key: string; type: string; value: string };
+
+const PROFILE_NAMESPACE = "hex_crew";
+
+export async function createCustomer(
+  shop: string,
+  input: { email: string; firstName: string; tags: string[]; profile: CrewProfileField[] },
+): Promise<string> {
+  const data = await adminGraphql<{
+    customerCreate: { customer: { id: string } | null; userErrors: UserError[] };
+  }>(
+    shop,
+    `mutation CrewCreateCustomer($input: CustomerInput!) {
+      customerCreate(input: $input) { customer { id } userErrors { field message } }
+    }`,
+    {
+      input: {
+        email: input.email,
+        firstName: input.firstName,
+        tags: input.tags,
+        metafields: input.profile.map((f) => ({ namespace: PROFILE_NAMESPACE, ...f })),
+      },
+    },
+  );
+  assertNoUserErrors("customerCreate", data.customerCreate.userErrors);
+  return data.customerCreate.customer!.id.split("/").pop()!;
+}
+
+export async function tagCustomer(shop: string, customerId: string, tags: string[]) {
+  const data = await adminGraphql<{ tagsAdd: { userErrors: UserError[] } }>(
+    shop,
+    `mutation CrewTagCustomer($id: ID!, $tags: [String!]!) {
+      tagsAdd(id: $id, tags: $tags) { node { id } userErrors { field message } }
+    }`,
+    { id: customerGid(customerId), tags },
+  );
+  assertNoUserErrors("tagsAdd", data.tagsAdd.userErrors);
+}
+
+export async function setCustomerProfile(shop: string, customerId: string, profile: CrewProfileField[]) {
+  const data = await adminGraphql<{ metafieldsSet: { userErrors: UserError[] } }>(
+    shop,
+    `mutation CrewSetProfile($metafields: [MetafieldsSetInput!]!) {
+      metafieldsSet(metafields: $metafields) { metafields { key } userErrors { field message code } }
+    }`,
+    {
+      metafields: profile.map((f) => ({ ownerId: customerGid(customerId), namespace: PROFILE_NAMESPACE, ...f })),
+    },
+  );
+  assertNoUserErrors("metafieldsSet", data.metafieldsSet.userErrors);
 }
