@@ -1,0 +1,25 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "HEX Crew"
+client_id = "9d791638185be7081536f812684d97cb"
+application_url = "https://shopify.dev/apps/default-app-home"
+embedded = false
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_customers,write_app_proxy"
+
+[app_proxy]
+url = "/proxy"
+prefix = "apps"
+subpath = "crew"
+
+[webhooks]
+api_version = "2027-01"
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true
+
+[auth]
+redirect_urls = [ "https://shopify.dev/apps/default-app-home/api/auth" ]
