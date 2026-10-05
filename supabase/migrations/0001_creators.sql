@@ -12,6 +12,10 @@ create table if not exists public.creators (
 
 alter table public.creators enable row level security;
 
+-- New tables aren't auto-exposed to the API roles, so grant the server
+-- role (secret key) what it needs. anon/authenticated get nothing.
+grant select, insert, update on public.creators to service_role;
+
 -- Insert on first visit, otherwise bump last_seen_at and visit_count.
 create or replace function public.record_creator_visit(p_shop text, p_customer_id bigint)
 returns public.creators
