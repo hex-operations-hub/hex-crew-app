@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { brand } from "@/lib/brand";
 import { createPitchTask } from "@/lib/clickup";
-import { markPitchClickUp, recordCreatorVisit, savePitch } from "@/lib/db";
+import { findRecentDuplicatePitch, markPitchClickUp, recordCreatorVisit, savePitch, type NewPitch } from "@/lib/db";
 import { isValidFormToken, issueFormToken } from "@/lib/form-token";
 import { isValidProxySignature } from "@/lib/proxy-signature";
 import { getCustomer } from "@/lib/shopify-admin";
@@ -80,7 +80,7 @@ async function submitPitch(proxy: Proxy, form: FormData): Promise<PitchOutcome> 
   const name = customer?.displayName ?? null;
   const email = customer?.email ?? null;
 
-  const id = await savePitch({
+  const record: NewPitch = {
     shop: proxy.shop,
     shopify_customer_id: Number(proxy.customerId),
     creator_name: name,
@@ -89,7 +89,10 @@ async function submitPitch(proxy: Proxy, form: FormData): Promise<PitchOutcome> 
     suggested_value: pitch.value || null,
     title: pitch.title,
     body: pitch.body,
-  });
+  };
+  if (await findRecentDuplicatePitch(record)) return { status: "sent" };
+
+  const id = await savePitch(record);
   if (!id) return error("We couldn't save your pitch. Please try again in a minute.");
 
   const task = await createPitchTask({

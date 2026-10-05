@@ -1723,6 +1723,10 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
     var saved = localStorage.getItem('hex_crew_v4_tab');
     if (saved) goTab(saved);
   } catch (error) {}
-  {% if crew_pitch_status != blank %}goTab('pitches');{% endif %}
+  {% if crew_pitch_status != blank %}
+  goTab('pitches');
+  // Replace the form-post entry so a refresh reloads the portal instead of re-sending the pitch.
+  try { history.replaceState(null, '', '{{ crew_path_prefix }}'); } catch (error) {}
+  {% endif %}
 })();
 </script>
