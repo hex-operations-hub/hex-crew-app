@@ -1,5 +1,6 @@
 import { brand } from "@/lib/brand";
 import { isValidProxySignature } from "@/lib/proxy-signature";
+import { recordCreatorVisit, type CreatorRecord } from "@/lib/db";
 import { getCustomer, type CrewCustomer } from "@/lib/shopify-admin";
 
 // Shopify forwards hexenergy.au/apps/crew/* here, adding shop,
@@ -13,7 +14,7 @@ export async function GET(request: Request) {
 
   // Local preview without Shopify: /proxy?preview=1 (dev server only).
   if (process.env.NODE_ENV === "development" && params.get("preview") === "1") {
-    return html(page({ firstName: "Test", displayName: "Test Creator", tags: ["hex-crew"] }, "local preview"));
+    return html(page({ firstName: "Test", displayName: "Test Creator", tags: ["hex-crew"] }, null, "local preview"));
   }
 
   if (!isValidProxySignature(params, process.env.SHOPIFY_API_SECRET ?? "")) {
@@ -34,7 +35,8 @@ export async function GET(request: Request) {
   try {
     const customer = await getCustomer(shop, customerId);
     if (!customer) return html(message("We couldn't find your account."), 404);
-    return html(page(customer, shop));
+    const record = await recordCreatorVisit(shop, customerId);
+    return html(page(customer, record, shop));
   } catch (error) {
     console.error(error);
     return html(message("Something went wrong loading your account."), 500);
@@ -70,7 +72,7 @@ function shell(content: string) {
 </style></head><body><main>${content}</main></body></html>`;
 }
 
-function page(customer: CrewCustomer, source: string) {
+function page(customer: CrewCustomer, record: CreatorRecord | null, source: string) {
   const name = escape(customer.firstName || customer.displayName);
   const isCrew = customer.tags.some((t) => t.toLowerCase().startsWith("hex-crew"));
   return shell(`<div class="card">
@@ -78,11 +80,17 @@ function page(customer: CrewCustomer, source: string) {
   <h1>Hi ${name}</h1>
   <dl>
     <dt>Crew status</dt><dd>${isCrew ? "Crew member" : "Not in the Crew yet"}</dd>
+    <dt>Portal member since</dt><dd>${record ? formatDate(record.first_seen_at) : "Not connected yet"}</dd>
+    <dt>Portal visits</dt><dd>${record ? record.visit_count : "Not connected yet"}</dd>
     <dt>Referral code</dt><dd>Not connected yet</dd>
     <dt>Commission</dt><dd>Not connected yet</dd>
   </dl>
   <p class="muted">Code and commission will come from GoAffPro once API access is confirmed. Source: ${escape(source)}</p>
 </div>`);
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric", timeZone: "Australia/Perth" });
 }
 
 function message(text: string, link?: { href: string; label: string }) {
