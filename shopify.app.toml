@@ -2,7 +2,7 @@
 
 name = "HEX Crew"
 client_id = "9d791638185be7081536f812684d97cb"
-application_url = "https://shopify.dev/apps/default-app-home"
+application_url = "https://hex-crew-app-neon.vercel.app"
 embedded = false
 
 [access_scopes]
@@ -10,7 +10,7 @@ embedded = false
 scopes = "read_customers,write_app_proxy"
 
 [app_proxy]
-url = "/proxy"
+url = "https://hex-crew-app-neon.vercel.app/proxy"
 prefix = "apps"
 subpath = "crew"
 
@@ -18,8 +18,7 @@ subpath = "crew"
 api_version = "2027-01"
 
 [build]
-include_config_on_deploy = true
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
 
 [auth]
-redirect_urls = [ "https://shopify.dev/apps/default-app-home/api/auth" ]
+redirect_urls = [ "https://hex-crew-app-neon.vercel.app/api/auth" ]
