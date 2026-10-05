@@ -103,7 +103,8 @@ export type NewApplication = {
 };
 
 // True if the same email already applied in the last few minutes
-// (double-click or resubmitted form).
+// (double-click or resubmitted form). Failed attempts don't count, so a
+// retry after a Shopify error goes through.
 export async function hasRecentApplication(shop: string, email: string): Promise<boolean> {
   const supabase = db();
   if (!supabase) return false;
@@ -113,6 +114,7 @@ export async function hasRecentApplication(shop: string, email: string): Promise
     .select("id")
     .eq("shop", shop)
     .eq("email", email.toLowerCase())
+    .neq("customer_link", "error")
     .gte("created_at", since)
     .limit(1);
   if (error) {
