@@ -43,6 +43,31 @@ export type NewPitch = {
   body: string;
 };
 
+const DUPLICATE_WINDOW_MINUTES = 10;
+
+// Returns the id of an identical pitch from the same creator in the last few
+// minutes (double-click or resubmitted form), so it isn't saved twice.
+export async function findRecentDuplicatePitch(pitch: NewPitch): Promise<string | null> {
+  const supabase = db();
+  if (!supabase) return null;
+  const since = new Date(Date.now() - DUPLICATE_WINDOW_MINUTES * 60 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from("pitches")
+    .select("id")
+    .eq("shop", pitch.shop)
+    .eq("shopify_customer_id", pitch.shopify_customer_id)
+    .eq("title", pitch.title)
+    .eq("body", pitch.body)
+    .gte("created_at", since)
+    .limit(1)
+    .maybeSingle<{ id: string }>();
+  if (error) {
+    console.error("findRecentDuplicatePitch failed", error);
+    return null;
+  }
+  return data?.id ?? null;
+}
+
 // Saves a pitch and returns its id, or null if Supabase isn't available.
 export async function savePitch(pitch: NewPitch): Promise<string | null> {
   const supabase = db();
