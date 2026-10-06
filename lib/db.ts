@@ -32,6 +32,43 @@ export async function recordCreatorVisit(shop: string, customerId: string): Prom
   return data;
 }
 
+// Read-only view of the creator's row (used after a form post, where the
+// visit was already counted on the page load).
+export async function getCreatorRecord(shop: string, customerId: string): Promise<CreatorRecord | null> {
+  const supabase = db();
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("creators")
+    .select("first_seen_at, visit_count")
+    .eq("shop", shop)
+    .eq("shopify_customer_id", Number(customerId))
+    .maybeSingle<CreatorRecord>();
+  if (error) {
+    console.error("getCreatorRecord failed", error);
+    return null;
+  }
+  return data;
+}
+
+// The tribe from the creator's most recent onboarding intake, if any.
+export async function getLatestTribe(shop: string, customerId: string): Promise<string | null> {
+  const supabase = db();
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("applications")
+    .select("tribe")
+    .eq("shop", shop)
+    .eq("shopify_customer_id", Number(customerId))
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle<{ tribe: string }>();
+  if (error) {
+    console.error("getLatestTribe failed", error);
+    return null;
+  }
+  return data?.tribe ?? null;
+}
+
 export type NewPitch = {
   shop: string;
   shopify_customer_id: number;

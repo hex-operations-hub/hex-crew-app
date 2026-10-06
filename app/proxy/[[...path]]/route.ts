@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { brand } from "@/lib/brand";
-import { recordCreatorVisit } from "@/lib/db";
+import { brand, type PortalKey } from "@/lib/brand";
+import { getCreatorRecord, getLatestTribe, recordCreatorVisit, type CreatorRecord } from "@/lib/db";
 import { issueFormToken } from "@/lib/form-token";
 import { submitOnboarding } from "@/lib/forms/onboarding";
 import { submitPitch } from "@/lib/forms/pitch";
@@ -19,7 +19,8 @@ const MAX_AGE_SECONDS = 5 * 60;
 // Literal paths so the bundler only ships the template files.
 const TEMPLATES = {
   hex: () => readFile(path.join(process.cwd(), "portal/hex/portal.liquid"), "utf8"),
-} satisfies Record<typeof brand.portal, () => Promise<string>>;
+  "hex-v2": () => readFile(path.join(process.cwd(), "portal/hex-v2/portal.liquid"), "utf8"),
+} satisfies Record<PortalKey, () => Promise<string>>;
 
 let template: string | null = null;
 
@@ -53,8 +54,7 @@ function verify(request: Request): ProxyRequest | Response {
 export async function GET(request: Request) {
   const proxy = verify(request);
   if (proxy instanceof Response) return proxy;
-  if (proxy.customerId) await recordCreatorVisit(proxy.shop, proxy.customerId);
-  return render(proxy);
+  return render(request, proxy, await loadCreator(proxy, { countVisit: true }));
 }
 
 export async function POST(request: Request) {
@@ -66,10 +66,32 @@ export async function POST(request: Request) {
   // A missing or malformed body is treated as an empty form (fails validation).
   const body = await request.formData().catch(() => new FormData());
   const outcome = await form.handler(proxy, body);
-  return render(proxy, { ...form, outcome });
+  return render(request, proxy, await loadCreator(proxy, { countVisit: false }), { ...form, outcome });
 }
 
-async function render(proxy: ProxyRequest, submitted?: { tab: string; liquid: string; outcome: FormOutcome }) {
+type Creator = { record: CreatorRecord | null; tribe: string | null };
+
+// Signed-in creators: count the visit (page loads only) and look up their tribe.
+async function loadCreator(proxy: ProxyRequest, { countVisit }: { countVisit: boolean }): Promise<Creator> {
+  if (!proxy.customerId) return { record: null, tribe: null };
+  const [record, tribe] = await Promise.all([
+    countVisit ? recordCreatorVisit(proxy.shop, proxy.customerId) : getCreatorRecord(proxy.shop, proxy.customerId),
+    getLatestTribe(proxy.shop, proxy.customerId),
+  ]);
+  // The intake field is free text; keep only a recognised tribe key.
+  const key = tribe?.toLowerCase().match(/lift|trail|combat|night|grind/)?.[0] ?? null;
+  return { record, tribe: key };
+}
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric", timeZone: "Australia/Perth" });
+
+async function render(
+  request: Request,
+  proxy: ProxyRequest,
+  creator: Creator,
+  submitted?: { tab: string; liquid: string; outcome: FormOutcome },
+) {
   // Liquid has no string escaping, so drop characters that could end the
   // string or open a tag. Values come from our code or Shopify's signed query.
   const assign = (name: string, value: string) => `{% assign ${name} = "${value.replace(/["{}%]/g, "")}" %}`;
@@ -79,6 +101,11 @@ async function render(proxy: ProxyRequest, submitted?: { tab: string; liquid: st
     assign("crew_path_prefix", proxy.pathPrefix),
     assign("crew_form_token", issueFormToken(proxy.customerId ?? "anon")),
     assign("crew_return_tab", submitted?.tab ?? ""),
+    // Images are served by this app; Shopify only proxies the page itself.
+    assign("crew_asset_base", `${new URL(request.url).origin}/crew`),
+    assign("crew_tribe", creator.tribe ?? ""),
+    assign("crew_member_since", creator.record ? formatDate(creator.record.first_seen_at) : ""),
+    assign("crew_visits", creator.record ? String(creator.record.visit_count) : ""),
   ];
   if (submitted) {
     const { outcome, liquid } = submitted;
