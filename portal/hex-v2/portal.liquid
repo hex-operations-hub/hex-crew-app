@@ -1,0 +1,2621 @@
+{% comment %} HEX Crew portal v2 (dark landing) - based on v1, moved as-is from theme section robot-hex-heroes-public-v4. Rendered by Shopify via the app proxy (application/liquid). Variables crew_* are set by the app from lib/brand.ts. {% endcomment %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"></noscript>
+<style>
+/* ============ HEX CREW v2: "The Standard, after dark" ============
+   Tokens are scoped to the portal root so nothing leaks into the theme.
+   Sizes are px-based: Shopify themes often set html{font-size:62.5%}. */
+.hex-crew-v4 {
+  color-scheme: dark;
+  --bg: oklch(16% 0.009 75);
+  --bg-grid: oklch(19% 0.009 75);
+  --surface: oklch(20% 0.010 75);
+  --surface-2: oklch(23% 0.011 75);
+  --surface-3: oklch(27% 0.012 75);
+  --ink: oklch(95% 0.012 85);
+  --ink-2: oklch(88% 0.012 85);
+  --mute: oklch(75% 0.014 80);
+  --mute-2: oklch(66% 0.014 80);
+  --border: oklch(29% 0.010 75);
+  --border-strong: oklch(39% 0.012 75);
+  --control: oklch(55% 0.012 75); /* borders of interactive controls: 3:1 on --bg */
+  --gold: oklch(79% 0.135 82);
+  --gold-ink: oklch(20% 0.030 75);
+  --gold-soft: oklch(27% 0.030 80);
+  --blue: oklch(76% 0.070 245);
+  --orange: oklch(76% 0.100 60);
+  --green: oklch(78% 0.090 150);
+  --terracotta: oklch(74% 0.090 40);
+  --crimson: oklch(72% 0.100 20);
+
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --font-body: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+
+  --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px;
+  --space-xl: 32px; --space-2xl: 48px; --space-3xl: 64px; --space-4xl: 96px;
+  --section-gap: clamp(88px, 6vw + 56px, 168px);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  width: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+body:has(.hex-crew-v4) { background: oklch(16% 0.009 75); }
+.hex-crew-v4 *, .hex-crew-v4 *::before, .hex-crew-v4 *::after { box-sizing: border-box; }
+/* Film grain: fixed, non-interactive, never on a scrolling layer. */
+.hex-crew-v4::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  opacity: 0.07; mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.hex-crew-v4 .shell { max-width: 1240px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+.hex-crew-v4 h1, .hex-crew-v4 h2, .hex-crew-v4 h3, .hex-crew-v4 h4 { font-family: var(--font-body); color: inherit; }
+
+/* ============ HEADER ============ */
+header.hx-header {
+  background: rgba(245,244,238,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.hx-header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px; max-width: 1200px; margin: 0 auto;
+}
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 18px; letter-spacing: -0.4px; }
+.brand .mark { width: 24px; height: 24px; background: var(--ink); clip-path: polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0% 50%); }
+.brand-meta { font-size: 12px; color: var(--mute); font-weight: 400; }
+.url-bar {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 12px; color: var(--mute);
+  background: var(--surface); padding: 7px 12px;
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.url-bar .gold { color: var(--gold); font-weight: 600; }
+
+/* ============ TABS ============ */
+nav.tabs {
+  background: rgba(245,244,238,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 65px; z-index: 90;
+  overflow-x: auto;
+}
+nav.tabs .inner { display: flex; max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+nav.tabs button {
+  background: transparent; border: 0;
+  color: var(--mute); font-weight: 500; font-size: 13px;
+  padding: 16px 0; margin-right: 28px;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all 0.15s; white-space: nowrap; font-family: inherit;
+}
+nav.tabs button:hover { color: var(--ink); }
+nav.tabs button.active { color: var(--ink); border-bottom-color: var(--gold); }
+
+/* ============ SECTIONS ============ */
+section.view { display: none; padding: 72px 0 96px; }
+section.view.active { display: block; }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 500; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 24px;
+}
+.eyebrow::before { content: ""; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
+.eyebrow.blue { color: var(--blue); } .eyebrow.blue::before { background: var(--blue); }
+.eyebrow.green { color: var(--green); } .eyebrow.green::before { background: var(--green); }
+.eyebrow.orange { color: var(--orange); } .eyebrow.orange::before { background: var(--orange); }
+.eyebrow.terracotta { color: var(--terracotta); } .eyebrow.terracotta::before { background: var(--terracotta); }
+.eyebrow.crimson { color: var(--crimson); } .eyebrow.crimson::before { background: var(--crimson); }
+
+h1.display { font-size: 76px; font-weight: 700; letter-spacing: -3px; line-height: 0.95; margin: 0 0 28px; max-width: 880px; }
+h2.display { font-size: 54px; font-weight: 700; letter-spacing: -2px; line-height: 0.98; margin: 0 0 20px; }
+h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.6px; margin: 32px 0 12px; }
+h4 { font-size: 13px; font-weight: 600; color: var(--mute); margin: 28px 0 12px; }
+.lede { font-size: 18px; color: var(--mute); max-width: 680px; line-height: 1.55; margin-bottom: 56px; }
+
+/* ============ BUTTONS ============ */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px; border-radius: 12px;
+  font-weight: 600; font-size: 14px; border: 0; cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+}
+.btn-primary { background: var(--ink); color: #fff; }
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border-strong); }
+.btn-ghost:hover { background: var(--surface); }
+.btn .arrow { font-size: 16px; }
+
+/* ============ STAT GRIDS ============ */
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 64px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+.stat-card .stat-label { font-size: 13px; color: var(--mute); margin-bottom: 16px; }
+.stat-card .stat-n { font-size: 52px; font-weight: 700; letter-spacing: -2.3px; line-height: 1; }
+.stat-card .stat-n small { font-size: 16px; font-weight: 500; color: var(--mute); margin-left: 2px; }
+.stat-card .stat-foot { font-size: 13px; color: var(--mute); margin-top: 12px; line-height: 1.5; }
+
+/* ============ TIER + ECON TABLE ============ */
+.tier-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin: 40px 0; }
+.tier-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; position: relative; transition: all 0.2s; }
+.tier-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.tier-card.featured { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tier-card.featured .tier-threshold, .tier-card.featured .tier-commission small, .tier-card.featured .tier-detail { color: #9a978d; }
+.tier-card.featured .tier-perks { border-top-color: #2a2a2a; }
+.tier-card.featured::before { content: "Most chased"; position: absolute; top: 20px; right: 20px; background: var(--gold); color: var(--ink); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; }
+.tier-pill { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--mute); padding: 4px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 100px; margin-bottom: 20px; font-weight: 500; }
+.tier-card.featured .tier-pill { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: #c8c5b8; }
+.tier-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+.tier-pill.r .dot { background: var(--mute); }
+.tier-pill.o .dot { background: var(--blue); }
+.tier-pill.c .dot { background: var(--gold); }
+.tier-pill.x .dot { background: var(--terracotta); }
+.tier-name { font-size: 22px; font-weight: 700; letter-spacing: -0.6px; }
+.tier-threshold { font-size: 12px; color: var(--mute); margin: 4px 0 24px; }
+.tier-stack { display: grid; gap: 12px; margin-bottom: 24px; }
+.tier-stack-row { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0; border-bottom: 1px dashed var(--border); }
+.tier-card.featured .tier-stack-row { border-bottom-color: #2a2a2a; }
+.tier-stack-row:last-child { border-bottom: 0; }
+.tier-stack-label { font-size: 12px; color: var(--mute); }
+.tier-card.featured .tier-stack-label { color: #9a978d; }
+.tier-stack-val { font-size: 28px; font-weight: 700; letter-spacing: -1.2px; }
+.tier-perks { list-style: none; padding: 20px 0 0; margin: 0; border-top: 1px solid var(--border); font-size: 13px; }
+.tier-perks li { padding: 5px 0; }
+.tier-commission { font-size: 48px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
+.tier-commission small { font-size: 14px; font-weight: 500; color: var(--mute); margin-left: 2px; }
+
+/* ============ ECON CALCULATOR ============ */
+.econ-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; margin: 32px 0; }
+.econ-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr 1.2fr 1fr;
+  gap: 12px; padding: 16px 0;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.econ-row:last-child { border-bottom: 0; }
+.econ-row.head { font-size: 11px; color: var(--mute); text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 16px; }
+.econ-row .tname { font-weight: 600; }
+.econ-row .neg { color: var(--crimson); }
+.econ-row .pos { color: var(--green); font-weight: 700; }
+.econ-row .big { font-weight: 700; font-size: 16px; }
+
+/* ============ CARDS / GRIDS ============ */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; }
+.card-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.card-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+
+/* ============ QUOTA / USE CASES ============ */
+.uc-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin: 32px 0; }
+.uc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; position: relative; transition: all 0.2s; }
+.uc-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.uc-num {
+  position: absolute; top: 24px; right: 24px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 13px; color: var(--mute); font-weight: 500;
+}
+.uc-pill { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--gold); padding: 4px 10px; background: var(--gold-soft); border-radius: 100px; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em; }
+.uc-card h3 { font-size: 22px; margin: 0 0 10px; font-weight: 700; letter-spacing: -0.6px; }
+.uc-card p { font-size: 14px; color: var(--mute); margin: 0 0 16px; line-height: 1.6; }
+.uc-meta { display: flex; gap: 16px; font-size: 12px; color: var(--mute); padding-top: 16px; border-top: 1px dashed var(--border); }
+.uc-meta strong { color: var(--ink); font-weight: 600; }
+
+/* ============ MISSIONS (kept) ============ */
+.mission-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(330px,1fr)); gap: 16px; }
+.mission { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: all 0.2s; cursor: pointer; }
+.mission:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.mission-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.mission-type { font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; color: var(--mute); }
+.mission-type .dot { width: 8px; height: 8px; border-radius: 50%; }
+.mission-type.pulse .dot { background: var(--mute); }
+.mission-type.spike .dot { background: var(--blue); }
+.mission-type.surge .dot { background: var(--gold); }
+.mission-type.squad .dot { background: var(--terracotta); }
+.mission-tribe { font-size: 12px; color: var(--mute); }
+.mission h3 { margin: 4px 0 12px; font-size: 22px; font-weight: 600; letter-spacing: -0.6px; }
+.mission .brief { font-size: 14px; color: var(--mute); margin-bottom: 24px; line-height: 1.6; }
+.mission-payout { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border); font-size: 13px; }
+.mission-payout .pay { font-weight: 600; color: var(--ink); }
+.mission-payout .clock { color: var(--mute); }
+
+/* ============ SPARK + WILDCARDS ============ */
+.spark-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 32px 0; }
+.spark-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; position: relative; }
+.spark-card.podium-1 { background: var(--ink); color: #fff; border-color: var(--ink); }
+.spark-card.podium-1 .spark-rank { color: var(--gold); }
+.spark-card.podium-1 .spark-prize { color: var(--gold); }
+.spark-card.podium-1 .spark-foot { color: #9a978d; }
+.spark-rank { font-size: 12px; font-weight: 600; color: var(--mute); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+.spark-prize { font-size: 56px; font-weight: 700; letter-spacing: -2.5px; line-height: 1; }
+.spark-prize small { font-size: 16px; font-weight: 500; color: var(--mute); }
+.spark-foot { font-size: 13px; color: var(--mute); margin-top: 12px; line-height: 1.6; }
+
+.wildcard-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin: 32px 0; }
+.wildcard { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all 0.2s; position: relative; overflow: hidden; }
+.wildcard:hover { transform: translateY(-2px); border-color: var(--gold); }
+.wildcard::before { content: ""; position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: var(--gold-soft); border-radius: 0 0 0 60px; opacity: 0.7; }
+.wildcard-cadence { font-size: 11px; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; position: relative; }
+.wildcard h4 { font-size: 17px; font-weight: 700; letter-spacing: -0.4px; color: var(--ink); margin: 0 0 8px; }
+.wildcard p { font-size: 13px; color: var(--mute); margin: 0 0 12px; line-height: 1.5; }
+.wildcard-val { font-size: 22px; font-weight: 700; letter-spacing: -0.8px; }
+.wildcard-val small { font-size: 11px; font-weight: 500; color: var(--mute); margin-left: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ============ 3-MONTH MAP ============ */
+
+/* ============ TRIBES ============ */
+.tribe-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin: 24px 0; }
+.tribe-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; transition: all 0.15s; cursor: pointer; }
+.tribe-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.tribe-icon { width: 32px; height: 32px; background: var(--ink); clip-path: polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0% 50%); margin-bottom: 16px; }
+.tribe-name { font-weight: 600; font-size: 17px; letter-spacing: -0.4px; }
+.tribe-count { color: var(--mute); font-size: 12px; margin-top: 2px; }
+
+/* ============ LEADERBOARD ============ */
+.tribe-tabs { display: flex; gap: 8px; margin: 32px 0; flex-wrap: wrap; }
+.tribe-tab { background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--mute); }
+.tribe-tab:hover { color: var(--ink); }
+.tribe-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.leaderboard { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.lb-row { display: grid; grid-template-columns: 64px 1fr 90px 110px 110px 130px; align-items: center; padding: 18px 28px; border-bottom: 1px solid var(--border); font-size: 14px; }
+.lb-row:last-child { border-bottom: 0; }
+.lb-row.head { background: var(--surface-2); font-size: 12px; color: var(--mute); }
+.lb-row .rank { font-weight: 600; color: var(--mute); }
+.lb-row.r1 .rank, .lb-row.r2 .rank, .lb-row.r3 .rank { color: var(--ink); font-weight: 700; }
+.lb-row .rank-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.lb-row.r1 .rank-dot { background: var(--gold); }
+.lb-row.r2 .rank-dot { background: var(--mute); }
+.lb-row.r3 .rank-dot { background: var(--terracotta); }
+.lb-creator { display: flex; align-items: center; gap: 14px; }
+.lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.lb-name { font-weight: 600; }
+.lb-handle { color: var(--mute); font-size: 12px; margin-top: 2px; }
+.lb-num { font-weight: 600; }
+.lb-views { color: var(--mute); }
+.lb-earned { font-weight: 700; font-size: 16px; }
+.lb-clips { color: var(--mute); font-size: 13px; }
+.lb-clips strong { color: var(--ink); }
+
+/* ============ CREATOR DASHBOARD ============ */
+.dash-grid { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+.dash-sidebar { background: var(--ink); color: #fff; border-radius: 20px; padding: 32px; height: fit-content; }
+.dash-avatar { width: 72px; height: 72px; background: var(--gold); clip-path: polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0% 50%); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 22px; color: var(--ink); margin-bottom: 18px; }
+.dash-name { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+.dash-handle { font-size: 13px; color: #9a978d; margin-top: 4px; }
+.dash-tier { display: inline-flex; align-items: center; gap: 6px; background: var(--gold); color: var(--ink); font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 100px; margin-top: 14px; }
+.dash-nav { margin-top: 32px; list-style: none; padding: 0; }
+.dash-nav li { padding: 12px 0; font-size: 14px; color: #9a978d; cursor: pointer; border-bottom: 1px solid #1f1f1f; }
+.dash-nav li.act { color: var(--gold); font-weight: 600; }
+.next-tier-note { margin-top: 28px; padding-top: 20px; border-top: 1px solid #1f1f1f; font-size: 13px; color: #9a978d; line-height: 1.6; }
+.next-tier-note strong { color: var(--gold); display: block; margin-bottom: 4px; }
+.dash-main { display: grid; gap: 16px; }
+.dash-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.dash-kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+.dash-kpi .kpi-l { font-size: 13px; color: var(--mute); margin-bottom: 12px; }
+.dash-kpi .kpi-n { font-size: 36px; font-weight: 700; letter-spacing: -1.4px; line-height: 1; }
+.dash-kpi .kpi-d { font-size: 12px; color: var(--green); margin-top: 8px; font-weight: 500; }
+.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+.dash-card h3 { margin: 0 0 20px; font-size: 18px; }
+.payout-row { display: grid; grid-template-columns: 1fr 120px 100px 110px; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; align-items: center; }
+.payout-row:last-child { border-bottom: 0; }
+.payout-row .src { font-weight: 600; }
+.payout-row .meta { color: var(--mute); font-size: 12px; margin-top: 2px; }
+.payout-row .amt { font-weight: 700; text-align: right; }
+.status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
+.status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; }
+.status-pill.paid::before { background: var(--green); } .status-pill.paid { color: var(--green); }
+.status-pill.pending::before { background: var(--orange); } .status-pill.pending { color: var(--orange); }
+.status-pill.locked::before { background: var(--terracotta); } .status-pill.locked { color: var(--terracotta); }
+
+/* ============ QUOTA TRACKER ============ */
+.quota-tracker { background: var(--surface-2); border-radius: 12px; padding: 20px; margin-top: 14px; }
+.quota-bar { display: grid; grid-template-columns: repeat(10,1fr); gap: 4px; height: 32px; margin: 14px 0 8px; }
+.quota-pill { background: var(--border); border-radius: 4px; position: relative; }
+.quota-pill.done { background: var(--green); }
+.quota-pill.done::after { content: "✓"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #fff; font-size: 14px; font-weight: 700; }
+.quota-pill.extra { background: var(--gold); }
+.quota-foot { display: flex; justify-content: space-between; font-size: 12px; color: var(--mute); }
+
+/* ============ ADMIN DASHBOARD ============ */
+.admin-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+.admin-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 100px; background: var(--surface); border: 1px solid var(--border); color: var(--mute); }
+.admin-pill .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
+.admin-kpis { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; margin-bottom: 24px; }
+.admin-kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.admin-kpi .l { font-size: 11px; color: var(--mute); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+.admin-kpi .n { font-size: 26px; font-weight: 700; letter-spacing: -0.9px; line-height: 1; }
+.admin-kpi .n small { font-size: 13px; font-weight: 500; color: var(--mute); }
+.admin-kpi .d { font-size: 11px; color: var(--green); margin-top: 6px; font-weight: 500; }
+.admin-kpi .d.warn { color: var(--orange); }
+.admin-kpi .d.bad { color: var(--crimson); }
+
+.chart-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+.chart-card h3 { margin: 0 0 6px; font-size: 18px; font-weight: 600; letter-spacing: -0.4px; }
+.chart-card .sub { font-size: 13px; color: var(--mute); margin-bottom: 24px; }
+.chart-wrap { position: relative; height: 280px; }
+
+.attrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+.risk-row { display: grid; grid-template-columns: 1fr 100px 80px 80px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.risk-row:last-child { border-bottom: 0; }
+.risk-row .label { font-weight: 600; }
+.risk-row .meta { color: var(--mute); font-size: 12px; margin-top: 2px; }
+.risk-bar { width: 100px; height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.risk-bar-fill { height: 100%; background: var(--green); border-radius: 100px; }
+.risk-bar-fill.warn { background: var(--orange); }
+.risk-bar-fill.bad { background: var(--crimson); }
+.risk-val { font-weight: 700; text-align: right; }
+
+/* ============ ONBOARDING ============ */
+.onb-stepper { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin: 40px 0 32px; }
+.onb-step { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s; }
+.onb-step:hover { border-color: var(--border-strong); }
+.onb-step.active { border-color: var(--ink); background: var(--ink); color: #fff; }
+.onb-step.active .step-n { color: var(--gold); }
+.onb-step .step-n { font-size: 12px; font-weight: 600; color: var(--mute); }
+.onb-step .step-name { font-weight: 600; font-size: 15px; margin-top: 8px; letter-spacing: -0.3px; }
+.onb-content { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 48px; display: none; }
+.onb-content.active { display: block; }
+.onb-content h3 { font-size: 32px; font-weight: 700; letter-spacing: -1.1px; margin: 0 0 12px; }
+.onb-content .lede { font-size: 16px; max-width: 720px; margin-bottom: 36px; }
+
+.clip-spec { background: var(--surface-2); border-radius: 16px; padding: 32px; margin: 16px 0; border: 1px solid var(--border); }
+.clip-tag { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.clip-tag .name { font-size: 13px; font-weight: 600; color: var(--gold); }
+.clip-tag .duration { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12px; color: var(--mute); background: var(--surface); border: 1px solid var(--border); padding: 2px 10px; border-radius: 6px; }
+.clip-spec h4 { font-size: 20px; font-weight: 600; margin: 0 0 8px; color: var(--ink); letter-spacing: -0.4px; }
+.clip-spec .what { font-size: 15px; color: var(--mute); margin-bottom: 20px; line-height: 1.6; }
+.clip-spec h5 { font-size: 12px; font-weight: 600; color: var(--mute); margin: 16px 0 8px; letter-spacing: 0.02em; text-transform: uppercase; }
+.clip-spec ul { margin: 0; padding-left: 20px; font-size: 14px; color: var(--ink-2); }
+.clip-spec ul li { margin-bottom: 8px; line-height: 1.6; }
+.clip-spec .pro-tip { margin-top: 20px; background: var(--gold-soft); border-radius: 12px; padding: 16px 20px; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+.clip-spec .pro-tip strong { color: var(--gold); }
+.clip-spec ul.bad li { color: var(--terracotta); }
+
+.form-row { margin: 16px 0; }
+.form-row label { display: block; font-size: 13px; font-weight: 500; color: var(--mute); margin-bottom: 8px; }
+.form-row input, .form-row textarea { width: 100%; padding: 14px 16px; border: 1px solid var(--border-strong); border-radius: 10px; font-family: inherit; font-size: 14px; background: var(--surface); }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ============ CALLOUT ============ */
+.callout { background: var(--ink); color: #fff; border-radius: 20px; padding: 48px; margin: 40px 0; }
+.callout h3 { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin: 0 0 16px; color: #fff; }
+.callout p { font-size: 16px; color: #c8c5b8; max-width: 640px; line-height: 1.6; margin: 0; }
+.callout ul { list-style: none; padding: 0; margin: 16px 0 0; }
+.callout ul li { padding: 8px 0; color: #c8c5b8; font-size: 15px; line-height: 1.6; }
+.callout ul li strong { color: var(--gold); font-weight: 600; }
+
+/* ============ FAQ ============ */
+.faq { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
+.faq-q { padding: 22px 28px; font-weight: 600; font-size: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.3px; }
+.faq-q::after { content: "+"; color: var(--mute); font-size: 20px; }
+.faq.open .faq-q::after { content: "−"; }
+.faq-a { display: none; padding: 0 28px 24px; color: var(--mute); font-size: 14px; line-height: 1.6; }
+.faq.open .faq-a { display: block; }
+
+/* ============ LESSONS ============ */
+.lesson-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(310px,1fr)); gap: 16px; }
+.lesson { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: all 0.15s; }
+.lesson .lab-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); font-size: 12px; color: var(--mute); padding: 4px 10px; border-radius: 100px; margin-bottom: 20px; font-weight: 500; }
+.lesson .lab-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+.lesson.win .lab-pill .dot { background: var(--green); }
+.lesson.warn .lab-pill .dot { background: var(--terracotta); }
+.lesson .brand-n { font-size: 22px; font-weight: 700; letter-spacing: -0.6px; margin-bottom: 8px; }
+.lesson .stat-n { font-size: 44px; font-weight: 700; letter-spacing: -1.8px; line-height: 1; margin: 12px 0; }
+.lesson .stat-n small { font-size: 13px; font-weight: 500; color: var(--mute); }
+.lesson .verdict { font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.lesson.win .verdict { color: var(--green); }
+.lesson.warn .verdict { color: var(--terracotta); }
+.lesson p { font-size: 14px; color: var(--mute); margin: 0 0 16px; line-height: 1.6; }
+.lesson .takeaway { background: var(--surface-2); border: 1px solid var(--border); padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+.lesson .takeaway strong { color: var(--ink); display: block; margin-bottom: 2px; font-weight: 600; }
+
+footer { border-top: 1px solid var(--border); background: var(--surface); padding: 32px; font-size: 13px; text-align: center; color: var(--mute); line-height: 1.6; }
+footer strong { color: var(--ink); font-weight: 600; }
+
+@media (max-width: 880px) {
+  h1.display { font-size: 44px; letter-spacing: -1.4px; }
+  h2.display { font-size: 32px; letter-spacing: -1px; }
+  .stats-grid, .tribe-row, .tier-grid, .uc-grid { grid-template-columns: 1fr 1fr; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .dash-kpis, .admin-kpis { grid-template-columns: 1fr 1fr; }
+  .onb-stepper { grid-template-columns: repeat(2,1fr); }
+  .onb-content { padding: 24px; }
+  .chart-grid, .attrib-grid { grid-template-columns: 1fr; }
+  .spark-grid { grid-template-columns: 1fr; }
+  .wildcard-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.brand-logo-exact { display:block; width:88px; height:auto; object-fit:contain; flex:0 0 auto; }
+a.url-bar { text-decoration:none; color:var(--mute); }
+a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2px solid var(--gold); outline-offset:3px; }
+@media (max-width:760px) { .brand-logo-exact { width:78px; } }
+
+.hex-v4-header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.tab-login { display:flex; align-items:center; padding:16px 0; color:var(--gold); font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap; }
+.hex-native-note { font-size:12px; color:var(--mute); }
+@media (max-width:760px) {
+  .hx-header-inner { align-items:flex-start; gap:12px; }
+  .hex-v4-header-actions { width:100%; justify-content:flex-start; }
+  .hex-v4-header-actions .url-bar { font-size:10px; }
+  .tab-login { margin-right:18px; }
+}
+
+
+/* Leaderboard 'blur' mode (app config): content visible but unreadable. */
+.crew-blurred .shell { position: relative; }
+.crew-blurred .shell > *:not(.crew-blur-note) { filter: blur(6px); pointer-events: none; user-select: none; }
+.crew-blur-note { position: absolute; top: 120px; left: 50%; transform: translateX(-50%); z-index: 2; background: var(--ink); color: #fff; padding: 14px 22px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+
+/* ============ v2 DARK SHELL (header, tabs, existing tab content) ============ */
+.hex-crew-v4 header.hx-header,
+.hex-crew-v4 nav.tabs {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.hex-crew-v4 header.hx-header { z-index: 20; }
+.hex-crew-v4 nav.tabs { z-index: 19; scrollbar-width: none; }
+.hex-crew-v4 nav.tabs::-webkit-scrollbar { display: none; }
+.hex-crew-v4 .brand-logo-exact { filter: invert(1) brightness(0.96); }
+.hex-crew-v4 .brand-meta { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+.hex-crew-v4 .url-bar, .hex-crew-v4 a.url-bar {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; min-height: 36px;
+  background: transparent; border: 1px solid var(--control); color: var(--ink-2);
+  border-radius: 999px; padding: 0 16px;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hex-crew-v4 a.url-bar:hover { border-color: var(--gold); color: var(--ink); }
+}
+
+/* Tabs: active state is an underline that slides between tabs (see JS). */
+.hex-crew-v4 nav.tabs .inner { position: relative; }
+.hex-crew-v4 nav.tabs .tab-btn { min-height: 52px; }
+.hex-crew-v4 nav.tabs .tab-btn:last-of-type { margin-right: 0; }
+.hex-crew-v4 nav.tabs button {
+  color: var(--mute); font-family: var(--font-body); font-weight: 500; font-size: 14px;
+  border-bottom: 0; transition: color 160ms ease;
+}
+.hex-crew-v4 nav.tabs button.active { color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .hex-crew-v4 nav.tabs button:hover { color: var(--ink); } }
+.hex-crew-v4 .crew-tab-indicator {
+  position: absolute; left: 0; bottom: 0; height: 2px; width: 1px;
+  background: var(--gold); transform-origin: left center;
+  transition: transform 240ms var(--ease-in-out);
+}
+.hex-crew-v4 .tab-login { color: var(--gold); }
+
+/* Shared type for the existing tabs, re-cut in the v2 faces. */
+.hex-crew-v4 h1.display, .hex-crew-v4 h2.display {
+  font-family: var(--font-display); font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.005em; line-height: 0.9;
+}
+.hex-crew-v4 h1.display { font-size: clamp(52px, 5vw + 24px, 104px); }
+.hex-crew-v4 h2.display { font-size: clamp(40px, 3.6vw + 20px, 76px); }
+.hex-crew-v4 .eyebrow, .hex-crew-v4 .eyebrow.blue, .hex-crew-v4 .eyebrow.green, .hex-crew-v4 .eyebrow.orange,
+.hex-crew-v4 .eyebrow.terracotta, .hex-crew-v4 .eyebrow.crimson {
+  color: var(--gold); font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
+}
+.hex-crew-v4 .eyebrow::before { width: 14px; height: 2px; border-radius: 0; background: var(--gold) !important; }
+.hex-crew-v4 .lede { color: var(--mute); line-height: 1.7; }
+
+/* Buttons (existing tabs). */
+.hex-crew-v4 .btn { border-radius: 999px; font-family: var(--font-body); transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out); }
+.hex-crew-v4 .btn:active { transform: scale(0.97); }
+.hex-crew-v4 .btn-primary { background: var(--gold); color: var(--gold-ink); }
+.hex-crew-v4 .btn-primary:hover { transform: none; }
+.hex-crew-v4 .btn-ghost { color: var(--ink); border-color: var(--border-strong); }
+.hex-crew-v4 .btn-ghost:hover { background: var(--surface-2); }
+
+/* Components that used the old ink colour as a dark background. */
+.hex-crew-v4 .callout,
+.hex-crew-v4 .tier-card.featured,
+.hex-crew-v4 .spark-card.podium-1,
+.hex-crew-v4 .dash-sidebar {
+  background: var(--surface-2); color: var(--ink); border: 1px solid var(--border-strong);
+}
+.hex-crew-v4 .callout h3 { color: var(--ink); }
+.hex-crew-v4 .callout p, .hex-crew-v4 .callout ul li { color: var(--mute); }
+.hex-crew-v4 .callout ul li strong { color: var(--gold); }
+.hex-crew-v4 .tier-card.featured { border-color: var(--gold); }
+.hex-crew-v4 .tier-card.featured .tier-threshold, .hex-crew-v4 .tier-card.featured .tier-commission small,
+.hex-crew-v4 .tier-card.featured .tier-detail, .hex-crew-v4 .tier-card.featured .tier-stack-label,
+.hex-crew-v4 .spark-card.podium-1 .spark-foot, .hex-crew-v4 .dash-handle, .hex-crew-v4 .dash-nav li,
+.hex-crew-v4 .next-tier-note { color: var(--mute); }
+.hex-crew-v4 .tier-card.featured .tier-perks, .hex-crew-v4 .tier-card.featured .tier-stack-row,
+.hex-crew-v4 .dash-nav li, .hex-crew-v4 .next-tier-note { border-color: var(--border); }
+.hex-crew-v4 .tier-card.featured .tier-pill { background: var(--surface-3); border-color: var(--border-strong); color: var(--ink-2); }
+.hex-crew-v4 .tier-card.featured::before { color: var(--gold-ink); }
+.hex-crew-v4 .tribe-tab.active, .hex-crew-v4 .onb-step.active { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); }
+.hex-crew-v4 .onb-step.active * { color: var(--gold-ink); }
+.hex-crew-v4 .crew-blur-note { background: var(--gold); color: var(--gold-ink); border-radius: 999px; }
+.hex-crew-v4 .quota-pill.done::after { color: var(--gold-ink); }
+
+/* Inline colours in the existing markup. */
+.hex-crew-v4 [style*="background:var(--ink)"] { background: var(--surface-2) !important; color: var(--ink) !important; }
+.hex-crew-v4 [style*="background:#fff"] { background: var(--surface) !important; }
+.hex-crew-v4 [style*="color:#9a978d"] { color: var(--mute) !important; }
+.hex-crew-v4 [style*="color:#fff"]:not([style*="background"]) { color: var(--ink) !important; }
+/* Light fills (status pills, gold cards) need dark text in the dark palette. */
+.hex-crew-v4 [style*="background:var(--blue)"], .hex-crew-v4 [style*="background:var(--green)"],
+.hex-crew-v4 [style*="background:var(--mute)"], .hex-crew-v4 [style*="background:var(--gold);color"],
+.hex-crew-v4 [style*="background:var(--gold);color"] *:not([style*="background"]):not(.btn) { color: var(--gold-ink) !important; }
+.hex-crew-v4 .dash-tier, .hex-crew-v4 .dash-avatar { color: var(--gold-ink); }
+
+/* Form fields: beat theme rules that force white inputs. */
+.hex-crew-v4 input, .hex-crew-v4 select, .hex-crew-v4 textarea {
+  background: var(--surface) !important; color: var(--ink) !important;
+  border: 1px solid var(--border-strong) !important; border-radius: 10px !important;
+  font-family: var(--font-body) !important;
+}
+.hex-crew-v4 input::placeholder, .hex-crew-v4 textarea::placeholder { color: var(--mute-2); }
+.hex-crew-v4 input:focus-visible, .hex-crew-v4 textarea:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 2px; border-color: var(--gold) !important;
+}
+.hex-crew-v4 input[readonly] { color: var(--mute) !important; }
+.hex-crew-v4 .crew-website-trap { position: absolute; left: -9999px; }
+
+/* Everything else that was a white card becomes a raised dark surface. */
+.hex-crew-v4 .stat-card, .hex-crew-v4 .tier-card, .hex-crew-v4 .uc-card, .hex-crew-v4 .mission,
+.hex-crew-v4 .wildcard, .hex-crew-v4 .spark-card, .hex-crew-v4 .onb-content, .hex-crew-v4 .lb-table,
+.hex-crew-v4 .faq { border-color: var(--border); }
+.hex-crew-v4 :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* ============ v2 LANDING (The Crew tab) ============ */
+.hex-crew-v4 section.view#recruit { padding: 0 0 var(--section-gap); }
+
+.hex-crew-v4 .crew-kicker {
+  margin: 0 0 var(--space-md); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--mute);
+}
+.hex-crew-v4 .crew-h2 {
+  margin: 0 0 var(--space-lg); max-width: 20ch;
+  font-family: var(--font-display); font-weight: 900; text-transform: uppercase;
+  font-size: clamp(42px, 3.6vw + 22px, 84px); line-height: 0.88; letter-spacing: 0.005em; text-wrap: balance;
+}
+.hex-crew-v4 .crew-body { margin: 0; max-width: 58ch; color: var(--mute); line-height: 1.7; }
+.hex-crew-v4 .crew-note { margin: var(--space-lg) 0 0; font-size: 13px; color: var(--mute-2); max-width: 62ch; }
+.hex-crew-v4 .crew-section { padding-top: var(--section-gap); }
+
+/* Buttons */
+.hex-crew-v4 .crew-btn {
+  display: inline-flex; align-items: center; gap: var(--space-sm);
+  min-height: 52px; padding: 0 var(--space-lg) 0 26px; border-radius: 999px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 600; letter-spacing: 0;
+  border: 1px solid transparent; cursor: pointer;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, border-color 160ms ease;
+}
+.hex-crew-v4 .crew-btn:active { transform: scale(0.97); }
+.hex-crew-v4 .crew-btn-primary { background: var(--gold); color: var(--gold-ink); }
+.hex-crew-v4 .crew-btn-ghost { background: transparent; color: var(--ink); border-color: var(--control); }
+.hex-crew-v4 .crew-btn-arrow {
+  display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  background: color-mix(in oklch, var(--gold-ink) 12%, transparent);
+  transition: transform 200ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hex-crew-v4 .crew-btn-primary:hover { background: oklch(84% 0.13 82); }
+  .hex-crew-v4 .crew-btn-primary:hover .crew-btn-arrow { transform: translateX(3px); }
+  .hex-crew-v4 .crew-btn-ghost:hover { border-color: var(--ink-2); }
+}
+.hex-crew-v4 .crew-link {
+  display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 44px; padding: 0;
+  background: none; border: 0; cursor: pointer; font: 600 15px/1 var(--font-body); color: var(--ink);
+  white-space: nowrap; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 6px; text-decoration-thickness: 2px;
+}
+
+/* Signed-in player strip */
+.hex-crew-v4 .crew-player { border-bottom: 1px solid var(--border); background: var(--surface); }
+.hex-crew-v4 .crew-player-inner { display: flex; align-items: center; gap: var(--space-md); min-height: 64px; }
+.hex-crew-v4 .crew-player-mono {
+  display: grid; place-items: center; flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--gold); color: var(--gold-ink); font: 900 20px/1 var(--font-display); text-transform: uppercase;
+}
+.hex-crew-v4 .crew-player-id { display: flex; flex-direction: column; min-width: 0; margin-right: auto; line-height: 1.3; }
+.hex-crew-v4 .crew-player-name { font-weight: 600; }
+.hex-crew-v4 .crew-player-meta { font-size: 13px; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Hero */
+.hex-crew-v4 .crew-hero {
+  position: relative; display: grid; align-items: end;
+  min-height: clamp(600px, 92dvh, 980px); padding: 120px 0 clamp(48px, 7vw, 96px); isolation: isolate;
+}
+.hex-crew-v4 .crew-hero-media { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+.hex-crew-v4 .crew-hero-media img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 72% 30%;
+  animation: crew-hero-settle 900ms var(--ease-out-expo) both;
+}
+.hex-crew-v4 .crew-hero-media::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, var(--bg) 0%, color-mix(in oklch, var(--bg) 82%, transparent) 34%, transparent 70%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 42%);
+}
+@keyframes crew-hero-settle { from { transform: scale(1.03); } to { transform: scale(1); } }
+.hex-crew-v4 .crew-hero-copy { width: 100%; }
+.hex-crew-v4 .crew-h1 {
+  margin: 0 0 var(--space-xl); display: flex; flex-direction: column;
+  font-family: var(--font-display); font-weight: 900; text-transform: uppercase;
+  font-size: clamp(60px, 6.2vw + 28px, 150px); line-height: 0.84; letter-spacing: 0.004em;
+}
+.hex-crew-v4 .crew-line { display: block; overflow: hidden; padding-bottom: 0.04em; }
+.hex-crew-v4 .crew-line > span { display: block; text-wrap: balance; animation: crew-line-up 700ms var(--ease-out-expo) both; animation-delay: calc(40ms + var(--i, 0) * 70ms); }
+.hex-crew-v4 .crew-line:last-child > span { color: var(--gold); }
+@keyframes crew-line-up { from { transform: translateY(105%); } to { transform: translateY(0); } }
+.hex-crew-v4 .crew-lede { margin: 0 0 var(--space-xl); max-width: 52ch; color: var(--ink-2); font-size: 18px; line-height: 1.65; }
+.hex-crew-v4 .crew-ctas { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.hex-crew-v4 .crew-fine { margin: var(--space-md) 0 0; font-size: 14px; color: var(--mute); max-width: 52ch; }
+.hex-crew-v4 .crew-hero-copy > :not(h1) { animation: crew-fade-up 600ms var(--ease-out) both; animation-delay: 320ms; }
+
+/* Ledger: the four headline numbers, as a scoreboard rather than cards */
+.hex-crew-v4 .crew-ledger { padding-top: clamp(56px, 6vw, 96px); }
+.hex-crew-v4 .crew-ledger-rows { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--border-strong); }
+.hex-crew-v4 .crew-ledger-row { padding: var(--space-lg) var(--space-lg) 0 0; border-right: 1px solid var(--border); }
+.hex-crew-v4 .crew-ledger-row + .crew-ledger-row { padding-left: var(--space-lg); }
+.hex-crew-v4 .crew-ledger-row:last-child { border-right: 0; }
+.hex-crew-v4 .crew-ledger-row dt { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+.hex-crew-v4 .crew-ledger-num {
+  margin: var(--space-sm) 0; overflow: hidden;
+  font-family: var(--font-display); font-weight: 800; font-size: clamp(44px, 1.8vw + 26px, 60px); line-height: 0.95;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.hex-crew-v4 .crew-ledger-num > span { display: inline-block; }
+.hex-crew-v4 .crew-ledger-num small { font-size: 0.4em; font-weight: 700; color: var(--mute); margin-left: 4px; letter-spacing: 0.04em; }
+.hex-crew-v4 .crew-ledger-row dd { margin: 0; }
+.hex-crew-v4 .crew-ledger-foot { font-size: 14px; color: var(--mute); line-height: 1.55; max-width: 32ch; }
+.hex-crew-v4 [data-reveal] .crew-ledger-num > span { transform: translateY(100%); transition: transform 700ms var(--ease-out-expo); transition-delay: calc(var(--i, 0) * 70ms); }
+.hex-crew-v4 [data-reveal].is-in .crew-ledger-num > span { transform: none; }
+
+/* Tribes */
+.hex-crew-v4 .crew-tribe-tabs {
+  position: relative; display: flex; gap: clamp(20px, 3vw, 48px); margin: var(--space-2xl) 0 0;
+  border-bottom: 1px solid var(--border-strong); overflow-x: auto; scrollbar-width: none;
+}
+.hex-crew-v4 .crew-tribe-tabs::-webkit-scrollbar { display: none; }
+.hex-crew-v4 .crew-tribe-tabs[data-more] { -webkit-mask-image: linear-gradient(90deg, #000 78%, transparent); mask-image: linear-gradient(90deg, #000 78%, transparent); }
+.hex-crew-v4 .crew-tribe-tab {
+  flex: 0 0 auto; padding: var(--space-xs) 0 var(--space-md); background: none; border: 0; cursor: pointer;
+  font-family: var(--font-display); font-weight: 900; text-transform: uppercase;
+  font-size: clamp(34px, 2.4vw + 18px, 60px); line-height: 0.9; color: var(--mute-2);
+  transition: color 160ms ease;
+}
+.hex-crew-v4 .crew-tribe-tab[aria-selected="true"] { color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .hex-crew-v4 .crew-tribe-tab:hover { color: var(--mute); } }
+.hex-crew-v4 .crew-tribe-indicator {
+  position: absolute; left: 0; bottom: -1px; height: 3px; width: 1px; background: var(--gold);
+  transform-origin: left center; transition: transform 240ms var(--ease-in-out);
+}
+.hex-crew-v4 .crew-tribe-panel {
+  display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(24px, 4vw, 64px); align-items: start;
+  padding-top: var(--space-2xl);
+}
+  position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; background: var(--surface);
+}
+  font-family: var(--font-display); font-weight: 900; text-transform: uppercase; font-size: clamp(88px, 9vw, 168px);
+  line-height: 0.8; color: transparent; -webkit-text-stroke: 1.5px var(--border-strong);
+}
+.hex-crew-v4 .crew-tribe-swap { transition: opacity 180ms var(--ease-out), filter 180ms var(--ease-out), transform 180ms var(--ease-out); }
+.hex-crew-v4 .crew-tribe-swap.is-swapping { transition-duration: 140ms; }
+.hex-crew-v4 .crew-tribe-swap.is-swapping { opacity: 0; filter: blur(3px); transform: translateY(6px); }
+.hex-crew-v4 .crew-tribe-scope { margin: 0 0 var(--space-xs); font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+.hex-crew-v4 .crew-tribe-prize { margin: 0 0 var(--space-xl); font-size: 20px; font-weight: 500; color: var(--ink); }
+.hex-crew-v4 .crew-tribe-prize strong { color: var(--gold); font-weight: 700; }
+.hex-crew-v4 .crew-missions { list-style: none; margin: 0 0 var(--space-lg); padding: 0; border-top: 1px solid var(--border); }
+.hex-crew-v4 .crew-mission {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2xs) var(--space-lg);
+  padding: var(--space-lg) 0; border-bottom: 1px solid var(--border);
+}
+.hex-crew-v4 .crew-mission-type { grid-column: 1 / -1; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); }
+.hex-crew-v4 .crew-mission-title { margin: 0; font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 30px; line-height: 1; }
+.hex-crew-v4 .crew-mission-clock { align-self: end; font-size: 13px; color: var(--mute); white-space: nowrap; }
+.hex-crew-v4 .crew-mission-brief { grid-column: 1 / -1; margin: var(--space-2xs) 0 0; color: var(--mute); font-size: 15px; max-width: 60ch; }
+.hex-crew-v4 .crew-mission-pay { grid-column: 1 / -1; margin: var(--space-xs) 0 0; font-weight: 600; color: var(--ink); }
+.hex-crew-v4 .crew-missions-more { font-size: 14px; color: var(--mute); margin: 0 0 var(--space-md); }
+.hex-crew-v4 .crew-missions-empty { padding: var(--space-lg) 0; color: var(--mute); border-bottom: 1px solid var(--border); }
+
+/* Ladder */
+.hex-crew-v4 .crew-ladder-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 96px); align-items: start; }
+.hex-crew-v4 .crew-range-label { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-md); margin: var(--space-xl) 0 var(--space-xs); font-size: 14px; color: var(--mute); }
+.hex-crew-v4 .crew-range-label output { font-family: var(--font-display); font-weight: 800; font-size: 32px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.hex-crew-v4 input.crew-range {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 44px; margin: 0;
+  background: transparent !important; border: 0 !important; padding: 0; cursor: pointer;
+}
+.hex-crew-v4 input.crew-range:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.hex-crew-v4 input.crew-range::-webkit-slider-runnable-track {
+  height: 4px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--gold) var(--fill, 0%), var(--control) var(--fill, 0%));
+}
+.hex-crew-v4 input.crew-range::-moz-range-track { height: 4px; border-radius: 4px; background: var(--control); }
+.hex-crew-v4 input.crew-range::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--gold); }
+.hex-crew-v4 input.crew-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 28px; height: 28px; margin-top: -12px; border-radius: 50%;
+  background: var(--ink); border: 6px solid var(--gold); transition: transform 160ms var(--ease-out);
+}
+.hex-crew-v4 input.crew-range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--ink); border: 6px solid var(--gold); }
+.hex-crew-v4 input.crew-range:active::-webkit-slider-thumb { transform: scale(1.12); }
+.hex-crew-v4 .crew-rungs { list-style: none; margin: var(--space-sm) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-xs); }
+.hex-crew-v4 .crew-rung { padding-top: var(--space-sm); border-top: 2px solid var(--border-strong); color: var(--mute-2); transition: color 160ms ease, border-color 160ms ease; }
+.hex-crew-v4 .crew-rung.is-reached { border-top-color: var(--gold); color: var(--ink); }
+.hex-crew-v4 .crew-rung b { display: block; font: 800 20px/1 var(--font-display); text-transform: uppercase; }
+.hex-crew-v4 .crew-rung span { font-size: 12px; }
+.hex-crew-v4 .crew-console { padding: clamp(24px, 3vw, 40px); background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+.hex-crew-v4 .crew-readout-at { margin: calc(var(--space-sm) * -1) 0 var(--space-lg); font-size: 14px; color: var(--mute); }
+.hex-crew-v4 .crew-readout-tier { margin: 0 0 var(--space-lg); font: 900 clamp(56px, 4vw + 24px, 96px)/0.85 var(--font-display); text-transform: uppercase; }
+.hex-crew-v4 .crew-figs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); padding-bottom: var(--space-lg); border-bottom: 1px solid var(--border); }
+.hex-crew-v4 .crew-fig b { display: block; font: 800 56px/1 var(--font-display); color: var(--gold); font-variant-numeric: tabular-nums; }
+.hex-crew-v4 .crew-fig span { font-size: 13px; color: var(--mute); }
+.hex-crew-v4 .crew-perks { list-style: none; margin: var(--space-lg) 0 0; padding: 0; display: grid; gap: var(--space-xs); }
+.hex-crew-v4 .crew-perks li { display: flex; gap: var(--space-sm); align-items: baseline; }
+.hex-crew-v4 .crew-perks li::before { content: ""; flex: 0 0 auto; width: 8px; height: 8px; transform: translateY(-1px) rotate(45deg); background: var(--gold); }
+.hex-crew-v4 .crew-perks li.is-new { animation: crew-fade-up 360ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 45ms); }
+
+/* Clip deck */
+.hex-crew-v4 .crew-deck-track {
+  display: grid; grid-auto-flow: column; grid-auto-columns: clamp(248px, 24vw, 320px); gap: var(--space-md);
+  --deck-inset: max(clamp(16px, 4vw, 40px), calc((100vw - 1240px) / 2 + clamp(16px, 4vw, 40px)));
+  margin-top: var(--space-2xl); padding: 0 var(--deck-inset) var(--space-md);
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--deck-inset); scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent;
+}
+.hex-crew-v4 .crew-clip { scroll-snap-align: start; perspective: 1200px; }
+.hex-crew-v4 .crew-clip-face {
+  position: absolute; inset: 0; display: flex; flex-direction: column; padding: var(--space-lg);
+  border: 1px solid var(--border); border-radius: 4px; background: var(--surface); overflow: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.hex-crew-v4 .crew-clip-back { transform: rotateY(180deg); background: var(--surface-2); }
+.hex-crew-v4 .crew-clip-num { font: 900 88px/0.8 var(--font-display); color: transparent; -webkit-text-stroke: 1.5px var(--border-strong); }
+.hex-crew-v4 .crew-clip-cat { margin-top: auto; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+.hex-crew-v4 .crew-clip-title { margin: var(--space-xs) 0 0; font: 800 34px/0.95 var(--font-display); text-transform: uppercase; }
+.hex-crew-v4 .crew-clip-hint { margin-top: var(--space-md); font-size: 13px; color: var(--mute); }
+.hex-crew-v4 .crew-clip-back p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+.hex-crew-v4 .crew-clip-meta { margin-top: auto; display: grid; gap: var(--space-2xs); font-size: 13px; color: var(--mute); }
+.hex-crew-v4 .crew-clip-meta b { color: var(--ink); font-weight: 600; }
+.hex-crew-v4 .crew-clip.has-photo .crew-clip-front { background: var(--surface); }
+.hex-crew-v4 .crew-clip-photo { position: absolute; inset: 0; z-index: 0; }
+.hex-crew-v4 .crew-clip-photo img { width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+.hex-crew-v4 .crew-clip-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, var(--surface) 8%, transparent 70%); }
+.hex-crew-v4 .crew-clip-front > :not(.crew-clip-photo) { position: relative; z-index: 1; }
+
+/* The deal in three lines */
+.hex-crew-v4 .crew-deal { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 96px); }
+.hex-crew-v4 .crew-deal-list { list-style: none; margin: 0; padding: 0; counter-reset: deal; }
+.hex-crew-v4 .crew-deal-list li { counter-increment: deal; display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--space-md); padding: var(--space-lg) 0; border-top: 1px solid var(--border); color: var(--mute); }
+.hex-crew-v4 .crew-deal-list li::before { content: counter(deal, decimal-leading-zero); font: 800 28px/1 var(--font-display); color: var(--gold); }
+.hex-crew-v4 .crew-deal-list strong { color: var(--ink); font-weight: 600; }
+
+/* FAQ */
+.hex-crew-v4 .crew-faq { border-top: 1px solid var(--border-strong); margin-top: var(--space-2xl); }
+.hex-crew-v4 .crew-faq details { border-bottom: 1px solid var(--border); }
+.hex-crew-v4 .crew-faq summary {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--space-lg);
+  min-height: 64px; padding: var(--space-md) 0; cursor: pointer; list-style: none;
+  font-size: 19px; font-weight: 500; color: var(--ink);
+}
+.hex-crew-v4 .crew-faq summary::-webkit-details-marker { display: none; }
+.hex-crew-v4 .crew-faq summary::after {
+  content: ""; flex: 0 0 auto; width: 14px; height: 14px;
+  background: linear-gradient(var(--gold), var(--gold)) center / 14px 2px no-repeat, linear-gradient(var(--gold), var(--gold)) center / 2px 14px no-repeat;
+  transition: transform 220ms var(--ease-out);
+}
+.hex-crew-v4 .crew-faq details[open] summary::after { transform: rotate(45deg); }
+.hex-crew-v4 .crew-faq details > div { padding: 0 0 var(--space-lg); max-width: 68ch; color: var(--mute); animation: crew-fade-up 260ms var(--ease-out) both; }
+
+/* Final call */
+.hex-crew-v4 .crew-final { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-xl); }
+.hex-crew-v4 .crew-final-line { margin: 0; font: 900 clamp(64px, 8vw + 20px, 168px)/0.82 var(--font-display); text-transform: uppercase; }
+.hex-crew-v4 .crew-final-line span { color: var(--gold); }
+
+/* Scroll reveal */
+.hex-crew-v4 [data-reveal] > .shell, .hex-crew-v4 [data-reveal].shell { opacity: 0; transform: translateY(8px); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); }
+.hex-crew-v4 [data-reveal].is-in > .shell, .hex-crew-v4 [data-reveal].shell.is-in { opacity: 1; transform: none; }
+.hex-crew-v4:not(.crew-js) [data-reveal] > .shell, .hex-crew-v4:not(.crew-js) [data-reveal].shell { opacity: 1; transform: none; }
+@keyframes crew-fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hex-crew-v4 .crew-ledger-rows { grid-template-columns: 1fr 1fr; }
+  .hex-crew-v4 .crew-ledger-row { padding: var(--space-lg) var(--space-md) var(--space-lg) 0; border-bottom: 1px solid var(--border); }
+  .hex-crew-v4 .crew-ledger-row + .crew-ledger-row { padding-left: 0; }
+  .hex-crew-v4 .crew-ledger-row:nth-child(even) { padding-left: var(--space-md); border-right: 0; }
+  .hex-crew-v4 .crew-tribe-panel, .hex-crew-v4 .crew-ladder-grid, .hex-crew-v4 .crew-deal { grid-template-columns: 1fr; }
+  
+}
+@media (max-width: 760px) {
+  .hex-crew-v4 header.hx-header { position: static; }
+  .hex-crew-v4 nav.tabs { top: 0; }
+  .hex-crew-v4 .hx-header-inner { flex-wrap: wrap; align-items: center; padding: 14px clamp(16px, 4vw, 40px); }
+  .hex-crew-v4 .hex-v4-header-actions { width: auto; flex-wrap: nowrap; }
+  .hex-crew-v4 .url-bar, .hex-crew-v4 a.url-bar { font-size: 12px; padding: 6px 11px; }
+  .hex-crew-v4 nav.tabs .inner { padding: 0 clamp(16px, 4vw, 40px); }
+}
+@media (max-width: 560px) {
+  .hex-crew-v4 { font-size: 16px; }
+  .hex-crew-v4 .crew-h1 { font-size: clamp(46px, 12.4vw, 64px); }
+  .hex-crew-v4 .crew-hero { min-height: auto; padding-top: 52vw; }
+  .hex-crew-v4 .crew-hero-media img { object-position: 60% 20%; }
+  .hex-crew-v4 .crew-hero-media::after { background: linear-gradient(0deg, var(--bg) 38%, color-mix(in oklch, var(--bg) 40%, transparent) 70%, transparent 100%); }
+  .hex-crew-v4 .crew-ledger-rows { grid-template-columns: 1fr; }
+  .hex-crew-v4 .crew-ledger-row, .hex-crew-v4 .crew-ledger-row:nth-child(even) { padding-left: 0; border-right: 0; }
+  .hex-crew-v4 .crew-ctas .crew-btn { flex: 1 1 100%; justify-content: space-between; }
+  .hex-crew-v4 .crew-player-meta { white-space: normal; }
+  .hex-crew-v4 .crew-figs .crew-fig b { font-size: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hex-crew-v4 .crew-hero-media img, .hex-crew-v4 .crew-line > span, .hex-crew-v4 .crew-hero-copy > :not(h1),
+  .hex-crew-v4 .crew-perks li.is-new, .hex-crew-v4 .crew-faq details > div { animation: crew-fade 200ms ease both; }
+  .hex-crew-v4 [data-reveal] > .shell, .hex-crew-v4 [data-reveal].shell, .hex-crew-v4 [data-reveal] .crew-ledger-num > span { transform: none !important; transition: opacity 200ms ease; }
+  .hex-crew-v4 .crew-clip-back { transform: none; opacity: 0; transition: opacity 200ms ease; }
+  .hex-crew-v4 .crew-tribe-swap.is-swapping { transform: none; filter: none; }
+  .hex-crew-v4 .crew-tribe-indicator, .hex-crew-v4 .crew-tab-indicator { transition: none; }
+}
+@keyframes crew-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* Hero intro plays once per session */
+.hex-crew-v4.crew-seen .crew-line > span, .hex-crew-v4.crew-seen .crew-hero-copy > :not(h1), .hex-crew-v4.crew-seen .crew-hero-media img { animation: none; }
+.hex-crew-v4 .crew-h1:focus { outline: none; }
+
+/* Deck header with prev/next on wider screens */
+.hex-crew-v4 .crew-deck-head { display: flex; align-items: end; justify-content: space-between; gap: var(--space-xl); }
+.hex-crew-v4 .crew-deck-nav { display: flex; align-items: center; gap: var(--space-sm); flex: 0 0 auto; }
+.hex-crew-v4 .crew-deck-count { font-size: 14px; color: var(--mute); font-variant-numeric: tabular-nums; margin-right: var(--space-xs); }
+.hex-crew-v4 .crew-round {
+  display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+  background: transparent; color: var(--ink); border: 1px solid var(--control); font-size: 18px;
+  transition: transform 160ms var(--ease-out), border-color 160ms ease, opacity 160ms ease;
+}
+.hex-crew-v4 .crew-round:active { transform: scale(0.95); }
+.hex-crew-v4 .crew-round:disabled { opacity: 0.35; cursor: default; }
+@media (hover: hover) and (pointer: fine) { .hex-crew-v4 .crew-round:not(:disabled):hover { border-color: var(--ink-2); } }
+.hex-crew-v4 .crew-clip-inner { position: relative; width: 100%; aspect-ratio: 3 / 4; transform-style: preserve-3d; transition: transform 380ms var(--ease-in-out); }
+.hex-crew-v4 .crew-clip.is-flipped .crew-clip-inner { transform: rotateY(180deg); }
+.hex-crew-v4 .crew-clip-front-btn { all: unset; position: absolute; inset: 0; z-index: 2; cursor: pointer; border-radius: 4px; }
+.hex-crew-v4 .crew-clip-front-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.hex-crew-v4 .crew-clip-back .crew-link { margin-top: var(--space-md); align-self: flex-start; }
+
+/* Phone: sticky apply bar once the hero has scrolled away */
+.hex-crew-v4 .crew-dock { display: none; }
+@media (max-width: 760px) {
+  .hex-crew-v4 .crew-dock {
+    display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 21;
+    padding: var(--space-sm) clamp(16px, 4vw, 40px) calc(var(--space-sm) + env(safe-area-inset-bottom));
+    background: var(--bg); border-top: 1px solid var(--border);
+    transform: translateY(110%); transition: transform 240ms var(--ease-out);
+  }
+  .hex-crew-v4 .crew-dock.is-on { transform: none; }
+  .hex-crew-v4 .crew-dock .crew-btn { width: 100%; justify-content: space-between; }
+  .hex-crew-v4 .crew-deck-nav { display: none; }
+  .hex-crew-v4 .url-bar, .hex-crew-v4 a.url-bar { min-height: 44px; }
+}
+@media (min-width: 901px) {
+  .hex-crew-v4 .crew-tribe-meta { position: sticky; top: 148px; }
+}
+@media (max-width: 900px) {
+  .hex-crew-v4 .crew-tribe-panel { grid-template-columns: 1fr; }
+  .hex-crew-v4 .crew-tribe-meta { order: 2; }
+}
+@media (max-width: 560px) {
+  .hex-crew-v4 .crew-hero { padding-top: 58vw; }
+  .hex-crew-v4 .crew-hero-copy { display: flex; flex-direction: column; }
+  .hex-crew-v4 .crew-hero-copy .crew-ctas { order: 3; margin-bottom: var(--space-xl); }
+  .hex-crew-v4 .crew-hero-copy .crew-lede { order: 4; }
+  .hex-crew-v4 .crew-hero-copy .crew-fine { order: 5; }
+  .hex-crew-v4 .crew-hero-copy .crew-h1 { order: 2; margin-bottom: var(--space-lg); }
+  .hex-crew-v4 .crew-hero-media img { object-position: 50% 18%; }
+  .hex-crew-v4 .crew-hero-media::after { background: linear-gradient(0deg, var(--bg) 46%, color-mix(in oklch, var(--bg) 35%, transparent) 64%, transparent 82%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hex-crew-v4 .crew-clip-inner, .hex-crew-v4 .crew-dock { transition: none; }
+  .hex-crew-v4 .crew-clip.is-flipped .crew-clip-inner { transform: none; }
+  .hex-crew-v4 .crew-clip.is-flipped .crew-clip-front { opacity: 0; }
+  .hex-crew-v4 .crew-clip.is-flipped .crew-clip-back { opacity: 1; }
+}
+</style>
+<div id="HexCrewV4-main" class="hex-crew-v4">
+<script>/* Play the hero intro once per session. */try{var crewRoot=document.getElementById('HexCrewV4-main');if(sessionStorage.getItem('hex_crew_seen'))crewRoot.classList.add('crew-seen');sessionStorage.setItem('hex_crew_seen','1');}catch(e){}</script>
+<!-- ===================== HEADER ===================== -->
+<header class="hx-header">
+  <div class="hx-header-inner">
+    <div class="brand">
+      <img class="brand-logo-exact" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYoAAAB0CAYAAACbkXXNAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAABIiSURBVHgB7Z3tceQ2Eobfu/L/UwbGRWA5AsEZyBGIjmD3IhhuBNJGMKMIVo6AdATri4DYCHYvAp26KNaOx+QM8UW+oPqp6rJ3JGF6MCAa6A8AyI95keZFnheUrxOvN6/6lMLVi9xj+vMs2Z/7V31yI+/x/vX9Oqz/2VV6+fwit/DjGss/+1PyFeU8/yzP/aL91QF4JpIO5bAHV999Qj4seCYVlWmxmIcB37P//KrTEgueUAx6o/ym+usawDOhXKMMGPsux6C5BxbTXyVOHjCP25X1PCd7cGLBaVztP5EXA06YVxQDFtvHon8w3kPZGszPWAW+MfcOvK6x7N+lrD7YrKNICYZCBjJbv31GOu6ARXRWSStz4xTyjHUr6jlHLDhg3lF3WIAGwDOZpJzscsLYd3uk4Q75dVXJIwbzsQvr5isd1l3BG3DFI1brH8YPv0cZMGb7VIjHIK+OKvnkK/xh3Bkfy1oLR4mTduDtlwYLeV4sgGdCqcDPlpMAOuTVUSWfPCEMVhf0IPdYljtwp33PTVhIAutKooSMJ9aMkVh2yKufSl6pEYasTJldLCJLBbeZ4xFivBYP8u/B2RElwLgCaxCHQV79VPKLRTgG3Kto0S3nIlKMZQPgmVQ6nPn8OdNjGVfuf6IMfgIf/0UcFkrpxDw/7kV+BS8ykX9CHr+8Qb+jsuBEvtdfsML8KJ3NaDVrlAFj3/ke33BKg7z6qeSVVEHfGsiua4w0SIs8N8w7qQNWLBew4OwUC34sOPvOIA7Gz6QyX0ID2WMcgEV0DpUd0rBDfl1jpMbKsAaytdAuTGJjOxZ59VPJLymDnCUU48XsoOXz7TPrFyPyPFt4kCtGcQM+xP/2Dfww9t0fiKOUs7WUaVL6r+U5/AXcz6NM9Ab+GPTuqwqcuBf5+UVaj7/JZigYJ4YvKIMtJgEwBucVP1qkxb3Ib+BlyFLy8UIMx6qzLoxa9EbCgQADzu1WCQfPsSYBWMTBnkOvcl5yVi/XAJ6JZe7R+u9W1vOSLFpENwfWYjELflj7Lia2w2r8VOZLhbx8AvBMLLsL+u9I9JyS6EXyD0iPBSct+LHgIza2wx6f+IZlfeVT73cFvmQL9yKP6LOUciIuKBknBpzU+N4XxwxB69jU8VzIOJPalRaENOCzqA3KgLHv9oiDNQNOMj8qlJEJ9xYw4K/cNif6dsT6diC/9pWx0+j8cxMwPiix21ZGt8LpQ69wUIFvrBxLh35hoSe/RsJ66inr1vCYrZ4Yy2j8lj4tVJlPDb7xciwduX41CoDVzWDATwXOvothq8ZPyUsDznHDLtkyO1PXUTDmyzuQ5A1f4AZ8tIjDgA8J8KUsHlPSIwFYB2UuDn19RDYXe2pDwbhSiz31dCm22HcWfMRWmSv5GbJ1SjhJYW0WOfk1paEYgjxstOBnq323xV2Ssgwy8f0HyjkkXVeMhENBWHD67Sz4seDsO4NwtlplriwL4yVeDFKjUGpwdqieGBsmWz0xVimPBpxjaa3nssLCpHQ93YAPPTE2nFhfvgUfLZQSkcptB8WhdzUdsDApDcUWTz1dii323RaNn7IODhrcHuIRRWfssebLV+DHgLPvLOJgLLSzUEqGtU4rtxywsgs91aGABpzICsSAGwtOYlYuFpyxoRLGwxI4lIkEtg36I73fCh9QcOD6FM1M2JbE3j/wVld+pUiHsg3mW7jfRHbkNEcPpYpR6A1m22KL8QnlOwbxpwKvydYrtx36SusnkJDKUFgoWyK2IttAYcei3O/Jgfsa1RhaEF1XOpDCUFgoW6NFOKxV5srfKTmLqMX2Krc/os9sovteUhgKnRS2R4zrScdDGZRSY3QOiY0+YhuI0ct2+mssKQyF+qO3RYs4LJQS+IJtIJOrQ7mIsZZdBPXlarqjUE6JjU9oYkMZtNgGw0Rb4u7IoY9HtCAn1lCIP9pA2RIt4tCFQxkUXeF7gkN5wW1xmdEFraeINRQWytZwCMdAFw6lsCVDIUgq6QeUgehZoaBdUKyh+Aa9XGRLOGgg+y2whUD2GGIs2D9XiwIrrWMNxQ5lHOOtzCM2PqGGogy2Esg+Ro71kIpt9vnIgji7aYpYQ6ETw7ZoEYdmwJVBi21xD/KsoRNEX4uCiDEUYiR0N7EtYv3WunAog63EJ2T+aVDgCh39ESoGhRBrKJRtERuf0IVDGbQoH4Pe1WRRJgYFnbcVYyjUzbAtYgOcBkoJbGE3cYveSBiUjUXvhqJHdxTKQOwEYqGUQOmGQhJoPmE7u1dxm92BnFBDoQe/bY/Ya0K1IrsMSr0OVuYccdXU2B7DhUy0hBoKNRLbQwPZ28eB6I4DDwz6oHWFbTIE5Wl3SaFXobJOCiUUEjHuxqTPthjI3mphmS/SB1Ij84Dy+kPGlriaDLaNQe9W29TR6fLFPRNKCX5L8Umy9VuDOCrk1S9UlLKRIjq5EpRxbOUSylTfLbmeSlk93oCPWL8143hooZTMUET31lKuKYvxQgyFAec2sJRsji1OqoyB7NjjSJR1KLmILhV7bMDVdgvOLVsFfgw4+y521cb4mW6hlIZ5kQ6c42lpoTq3KmRHYcFJCTuKLbrsLDhpoZSExTaK6FIhc8UOJIQYCkY3Q2zWzlJY8BF7kqjGq5RYZEJsoEfAnPIeJC64rewoSolPMBrZFnHcgI9SxsNbRwyDBG9rKFNI/6y+GPM1FKz1E6VUm7KuvmMw4ON3KOwYaNB6LsXVkTDWAIhY8CNGgrHvYrjKrFuoGCjMyLPQgXPssEqDFfHdUbCe56PxiTBaxMG4Q5LYhIPCihTRyaRnoPhgseJJs1twPZUSuNxirQHjeLiCBkVZYS+iO7zIB/BSxEmzrG6GJ5SBpP6x9V1srQHrUS41FCaGIjrGsTI2Zh6I9ZQjTRZfoP3D43ctVvaTTSCHaD2AG3lQvoKPnxHntpPPxLw6lCQH2W2+1R2Gw193WN9epcVyGHC7mqQ/ZA45HL0m/cVc0+HQP7uUnpQanBbWgh8Lvn6LNVwGefVTySdLVf1acB/q12F6dW7IdW+wID4xihtw0oIfCz5iEwBYU6WVy8h3lzstdQhas+7mWpzfUTtwH/ltQVS5fQyjdV3UqkYgerL1XY04mP24KpelQT7uATwTi4+rmn2c34EI1hoA9tjEAKORtYijQV79VPJKg/SUELQO2UkxfyaZWwwyM9f1ZMBJC36Yb3+LQV1PZZP6NAODPvZhwYlD72oKWVz+Bt7anEWuUZ1rKCw4KaHQzoCP2NoTVuOnzKdFOm7BnSUk4/0XhM8XDr2xYMWgT1XPxlxDwVgs5lBGBa4FH7EnxhoopZNqkbVDP0mxLhw+ojcSDnG00OD2RRh9c08oA9kWsvVdbMZLjbz6qeSVz4hHDMMe+XWNkRyZXQcAz8QSW0Q7ypwdhQUnLcrAgo8SXHZKPlLsKBvw3iopblXZReRIdhHjw/z87JFhxz/HULAGLfUgwHBaKG+ZFuHIfNCAd15w6IPWLfIgRuhX8J4vlyW4PcdQ3IATvfo0jBT95qCUTOgYYD/5tUVvJBzy4tAbC1YM+p3FojAeZpfCx7oEjIfmpdiOG+TVUSWvhLBbSLdQqbE878HdJzssBOuJsaUU2nXg67sKaWiQX1eV9NLAD/YiOik4y30cyTkO4O0bkSzB7VMsgGdCqcCPAWffpXKHVUB2XVXSi88iy4D7JjrRbW337nDSLGsfJancvhSjsOBE4xNhSAAuVd8doEHxEvH5/nfYbhFdKobgtgMnQxpzFJcMhQEfKSe7nGw1kH0M8wOijOMzBgw4eUSaIrpUOPBXbkdxyVA48JH6jJpctOAj9urTU8RoS5bJI5QScPAzFLH1FjmQq0or8KWntuCt3HbIjGxbxA+4KX/bghzA03cd8vadhQa42cU3sGnA9fyvGbSeSw2e/hJJMmfOvQpVBtjarhRZQRzAW+gyRa6+c5g/AJbsO1lcXEMPDmRCvvcnhK0sDfpFgMF6xOi/BhYc8d1S50xFURRFURRFURRFURRFURRFURRFURRFucycrCeDdfmG6aj9FfwyaxzC8XmvczqHtJcLd+ZnBhw4j99l6NMBd+ZnBmnaOYdPXzgoSiCS1tmAIxfYTujYebazQxjywH31eJ/uTFsGPP1aT+hYkeg39OWl/P9roj4dpJrQtfZsp4E/d/AbrzUUJYAdeB44ETOiowlsK6Rox3q+RzfRjkxoPg9wbnmY0LMh0nEQO6HrHZmeg0wZt5CjqXeYz31CXRVlkgrrP2SnMsZtRHsWfvg+3E8jbRjwncQ5NUEwGbNBHib6lFFXkXNFloeA9izOE3Ic+FfwHvypkMN2ZG4zoWcd0aZvWbvvBUT1SBsV/PXMLWZEz2tCPUXGDMUDqa5fcZ6Qo3HOjdnrgPY+o6zjcBQiGC8qyuUe6TA/2Nd5tm0z6LvUZBazU8spFfj7dJAGlzHw3w11+PuYvQto5wA9XkWJwILjQbs0QQgpXA5zrlQ1Ae1eZdI3pUwZYNZV+nUBffoMP3eODWh/f/T3IfGIGooSia8vvsM629eU7pH9hffyXWGPGR8ToJfFOjTw0zMkEOprjMZ2PyFjwIKPGv6fYweNRygr4uuLD8kgSkFq98juzHvVnm3tE+jbYD18++464D18FyRNgjbm7B7X4oA043hKOmg8Qong9OIi34f+T6yDRVpq9L7eMW7gx9jlQBbxbSyBhR/fEDYGfPv0j0xtsCBGzyEPLfrLpRwUJQEGfquUS5kdOWmQZ+WVwg9+nUBfi3VIsdKfQ4f4/vBtY63d71wM0sdcaihKAn44+v8QF0KD9MgK9dKVgiG6zkE+z/Hqy/fynakVtoUfO4RXkZ9D7rg+d7TIDfwIWaUb+LtBTvv0KqCN9uTf75Cn0OxSH0/h0N+7/AnxyPvLM3SAoiSGJdvl0k4ld55/h++TUOX5t82Ivjazvj5icR7fGppL7Y1Reb7HWGzBerbxjPjPOldiFzF15Pt3wOq3USob43hH8RM4uOTz9n0IHPxWn/K7sqr7BWlW2EwPbXvmZ8MVpj7IqvwOfviu4r+MvOarZ5ugjTmExmyOqdE/iyG7HXlv2dE4KEpCjg2FBQeX3Bm+k/dH9JP/O4+/kUnkHmmC+7765iK1ARZyuG5OaUde8+3T0+QAizykSu4QF5SFn9vz6fXvQtxeinKWIeuplFWvEDJ5v5/R7ikV0qxcDTi4NIlZcDKmd+z3kmu8p8pWk8newY+PUCOhZKZCHn9tiJxbRYUcMXL8t11iXU99wyn0zSUVztMQ6DinT01AO+akjTqxnoOk2mGFjBuf3YeieDG4nm7gh2xzf0d6HM6vimJcQdKuxB0a5Fnlj60mQ+IpH5CHw4WfMwZAfxt5LaRP3clrD+jHxqXJdQ//90pByDjX3YSSnSWyXVJQw0/Ph5E2ct0J8T6BvnusQ+5MMl85d9yEb3beE5bpk5R1RbXne++hKBmRHUVItkuqoJ0vN/Djz4nXJMc89cOVIpC9VvWwgR/uRR4nfnYH/6s+H0/+LZP71ArZNzuvRRgWfqR8JnzHzVqV/MobwsJv9dJhPVJUSQ/Unm1dkqvM+ubEd5X+cKatkB3be8zHt22LMFLcQRJKKeNGeSPIjsJ3kBn0D4VDHtqJtlNVSQ/Ur+35pM1OMeYj9tVX2CFP7EcQ/abcMClX6dIXEme5x3zkc4tu7sLvhfSpfL8GfvwI/8B0izSkHueKkgTflVNumTrls/Jsp8E8mkA9j2U/0u5tgnZTi8E4qdo5xneX0uHyBFnBX9elJFXWUeX5vg0UJTNSR8G2bf0y8bqvnnP9tikqWcdiCxZ8uJHXLPzbcDN+r4Zfvxpc3oXcgJOUWUe5xrmiBCOGwoCLduJ130minfl7Q9qsQzhjW/9UK8xUtBOv55qYhn71mUArnI9XGHDyiHQsFaxXlNmIoWDzb05NujkzsxzCT/2c8hE7cDE1wfsaYN9+9a0LOXd0CuPq2SE8BXcMCz80PqEsApsvfWwlbj3b6BBGBX99m4m2cleC+8pUcHaJGhrfeMVUnMqAq08/I+0ux3q+/5p3wihvCMl6ktXQv9H7lH/EukjGz9iqXlZNsr2fq19o5tDh9b93M39fdH088zNxvYgrZe2Tec9lxsgZQTeYx/8Q5uqoX//7r5m/P7VzcODoU4d+jKXcSQjyHcn3ca6frvB9MZUrQ05R/sL/AVyld88pzOSqAAAAAElFTkSuQmCC" alt="HEX Energy" width="394" height="116" />
+      <span class="brand-meta">Crew</span>
+    </div>
+    <div class="hex-v4-header-actions">
+      {% if customer %}
+        <a class="url-bar" href="{{ routes.account_url }}">My account</a>
+      {% else %}
+        <a class="url-bar" href="{{ routes.account_login_url }}">Sign in</a>
+      {% endif %}
+      <a class="url-bar" href="https://hexenergy.goaffpro.com/login" target="_blank" rel="noopener">Affiliate login</a>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="inner">
+    <button class="tab-btn active" data-tab="recruit">The Crew</button>
+    <button class="tab-btn" data-tab="tiers">Tiers &amp; Earnings</button>
+    <button class="tab-btn" data-tab="quota">Monthly Quota</button>
+    <button class="tab-btn" data-tab="bonuses">Missions &amp; Prizes</button>
+{% if customer %}
+    <button class="tab-btn" data-tab="pitches">Pitches &amp; Collabs</button>
+{% if crew_leaderboard != 'hide' %}
+    <button class="tab-btn" data-tab="leaderboard">Leaderboard</button>
+{% endif %}
+{% if crew_creator_view != 'hide' %}
+    <button class="tab-btn" data-tab="dashboard">Creator View</button>
+{% endif %}
+{% endif %}
+    <button class="tab-btn" data-tab="onboarding">Onboarding</button>
+  </div>
+</nav>
+
+<!-- ===================== 1. RECRUIT (v2 landing) ===================== -->
+{% assign crew_member = false %}{% assign crew_applied = false %}
+{% if customer %}{% if customer.tags contains 'hex-crew' %}{% assign crew_member = true %}{% elsif customer.tags contains 'hex-crew-applicant' %}{% assign crew_applied = true %}{% endif %}{% endif %}
+<section class="view active" id="recruit">
+{% if customer %}
+  <div class="crew-player">
+    <div class="shell crew-player-inner">
+      {% assign crew_first = customer.first_name | default: customer.name | default: customer.email %}
+      <span class="crew-player-mono" aria-hidden="true">{{ crew_first | slice: 0 | escape }}</span>
+      <div class="crew-player-id">
+        <span class="crew-player-name">{{ crew_first | escape }}</span>
+        <span class="crew-player-meta">{% if crew_member %}Crew member{% elsif crew_applied %}Application received{% else %}Not in the Crew yet{% endif %} · {% if crew_tribe != blank %}{{ crew_tribe | capitalize }} tribe{% else %}No tribe yet{% endif %}{% if crew_visits != blank %} · {{ crew_visits }} visits since {{ crew_member_since }}{% endif %}</span>
+      </div>
+      {% if crew_member %}<button type="button" class="crew-link" data-go="bonuses">Your missions</button>{% elsif crew_applied == false %}<button type="button" class="crew-link" data-go="onboarding">Apply to join</button>{% endif %}
+    </div>
+  </div>
+{% endif %}
+
+  <header class="crew-hero" data-hero>
+    <picture class="crew-hero-media" aria-hidden="true">
+      <source media="(max-width: 560px)" srcset="{{ crew_asset_base }}/hero-m-700.webp">
+      <img src="{{ crew_asset_base }}/hero-2000.webp" srcset="{{ crew_asset_base }}/hero-1200.webp 1200w, {{ crew_asset_base }}/hero-2000.webp 2000w, {{ crew_asset_base }}/hero-2752.webp 2752w" sizes="100vw" width="2752" height="829" alt="" fetchpriority="high" decoding="async">
+    </picture>
+    <div class="shell crew-hero-copy">
+      <p class="crew-kicker">Perth first · Looking for our HEROs</p>
+      <h1 class="crew-h1" tabindex="-1" data-view-heading><span class="crew-line"><span style="--i:0">Live your life.</span></span><span class="crew-line"><span style="--i:1">Record here and&nbsp;there.</span></span><span class="crew-line"><span style="--i:2">Shoot it through.</span></span></h1>
+      <p class="crew-lede">HEX Crew is for athletes, runners, lifters, surfers, fighters, FIFO crews and food makers who already use HEX. You don't have to perform. Film what's already happening, drop the clips in your HEX folder, and we do the rest. Keep an eye on your inbox: we're choosing the crew for our in-house shoots.</p>
+      <div class="crew-ctas">
+        {% if crew_member %}
+        <button type="button" class="crew-btn crew-btn-primary" data-go="bonuses">Your missions <span class="crew-btn-arrow" aria-hidden="true">→</span></button>
+        <button type="button" class="crew-btn crew-btn-ghost" data-go="pitches">Pitch an idea</button>
+        {% else %}
+        <button type="button" class="crew-btn crew-btn-primary" data-go="onboarding">Apply to join <span class="crew-btn-arrow" aria-hidden="true">→</span></button>
+        <button type="button" class="crew-btn crew-btn-ghost" data-go="quota">See the quota</button>
+        {% endif %}
+      </div>
+      <p class="crew-fine">You deal directly with the founders. We read every message.</p>
+    </div>
+  </header>
+
+  <section class="crew-ledger" aria-label="What you can earn" data-reveal>
+    <div class="shell">
+      <dl class="crew-ledger-rows">
+        <div class="crew-ledger-row"><dt>Your commission</dt><dd class="crew-ledger-num"><span style="--i:0">15–30<small>%</small></span></dd><dd class="crew-ledger-foot">On every verified sale through your code. Your rate rises automatically as your lifetime sales grow.</dd></div>
+        <div class="crew-ledger-row"><dt>Your audience saves</dt><dd class="crew-ledger-num"><span style="--i:1">20–30<small>%</small></span></dd><dd class="crew-ledger-foot">A real discount worth sharing. The higher your tier, the bigger their saving.</dd></div>
+        <div class="crew-ledger-row"><dt>Mission prizes</dt><dd class="crew-ledger-num"><span style="--i:2">$250–$10k</span></dd><dd class="crew-ledger-foot">Every mission has its own prize. Big PR stunts add extras like gear, tickets, named SKUs and custom kicks.</dd></div>
+        <div class="crew-ledger-row"><dt>Paid ideas</dt><dd class="crew-ledger-num"><span style="--i:3">$500–$5k</span></dd><dd class="crew-ledger-foot">Pitch a mission, activation or collab. If the community votes it up and we run it, you get paid its value.</dd></div>
+      </dl>
+      <p class="crew-note">Programme model. Tier, mission and prize figures are targets and are confirmed before launch.</p>
+    </div>
+  </section>
+
+  <section class="crew-section crew-tribes" aria-labelledby="crew-tribes-h" data-reveal>
+    <div class="shell">
+      <p class="crew-kicker">Pick your tribe</p>
+      <h2 id="crew-tribes-h" class="crew-h2">Five tribes. Five leaderboards. Five winners every month.</h2>
+      <p class="crew-body">You only compete inside your tribe. Surfers don't go up against gym creators, and DJs don't go up against fighters. Each tribe has its own $1,000 monthly bonus for the top three.</p>
+      <div class="crew-tribe-tabs" role="tablist" aria-label="Tribes" data-tribe-tabs>
+        <button type="button" role="tab" class="crew-tribe-tab" id="crew-tribe-lift" aria-controls="crew-tribe-panel" aria-selected="true" data-tribe="lift" data-name="Lift" data-scope="F45 · CrossFit · Strength">Lift</button>
+        <button type="button" role="tab" class="crew-tribe-tab" id="crew-tribe-trail" aria-controls="crew-tribe-panel" aria-selected="false" tabindex="-1" data-tribe="trail" data-name="Trail" data-scope="Run · Surf · Ocean swim">Trail</button>
+        <button type="button" role="tab" class="crew-tribe-tab" id="crew-tribe-combat" aria-controls="crew-tribe-panel" aria-selected="false" tabindex="-1" data-tribe="combat" data-name="Combat" data-scope="MMA · BJJ · Boxing">Combat</button>
+        <button type="button" role="tab" class="crew-tribe-tab" id="crew-tribe-night" aria-controls="crew-tribe-panel" aria-selected="false" tabindex="-1" data-tribe="night" data-name="Night" data-scope="DJs · Bars · Music">Night</button>
+        <button type="button" role="tab" class="crew-tribe-tab" id="crew-tribe-grind" aria-controls="crew-tribe-panel" aria-selected="false" tabindex="-1" data-tribe="grind" data-name="Grind" data-scope="Tradies · FIFO · Hustlers">Grind</button>
+        <span class="crew-tribe-indicator" aria-hidden="true"></span>
+      </div>
+      <div id="crew-tribe-panel" class="crew-tribe-panel" role="tabpanel" aria-labelledby="crew-tribe-lift" tabindex="0">
+        <div class="crew-tribe-meta crew-tribe-swap" data-tribe-meta>
+          <p class="crew-tribe-scope" data-tribe-scope>F45 · CrossFit · Strength</p>
+          <p class="crew-tribe-prize">The top three in <span data-tribe-name>Lift</span> share a <strong>$1,000</strong> bonus every month.</p>
+          <p class="crew-missions-more" data-tribe-more hidden></p>
+          <button type="button" class="crew-link" data-go="bonuses">All missions and prizes</button>
+        </div>
+        <ul class="crew-missions crew-tribe-swap" data-tribe-missions aria-label="Missions for this tribe"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="crew-section crew-ladder" aria-labelledby="crew-ladder-h" data-reveal>
+    <div class="shell crew-ladder-grid">
+      <div>
+        <p class="crew-kicker">Tiers</p>
+        <h2 id="crew-ladder-h" class="crew-h2">Your cut climbs. So does their&nbsp;discount.</h2>
+        <p class="crew-body">Four tiers, unlocked by your lifetime sales. Every step up raises your commission and your audience's discount.</p>
+        <p class="crew-note" id="crew-ladder-note">Programme model: the target ladder, not the current GoAffPro setup. <button type="button" class="crew-link" data-go="tiers">See every tier</button></p>
+      </div>
+      <div class="crew-console">
+        <div class="crew-readout">
+          <p class="crew-readout-tier" data-tier-name aria-live="polite">Recruit</p>
+          <p class="crew-readout-at" data-tier-at>Day one, open application</p>
+          <div class="crew-figs">
+            <div class="crew-fig"><b data-tier-comm>15%</b><span>Your commission</span></div>
+            <div class="crew-fig"><b data-tier-aud>20%</b><span>Audience saves</span></div>
+          </div>
+          <ul class="crew-perks" data-tier-perks></ul>
+        </div>
+        <label class="crew-range-label" for="crew-range">Your sales in the last 90 days <output for="crew-range" data-range-out>$0</output></label>
+        <input id="crew-range" class="crew-range" type="range" min="0" max="400" step="5" value="0" data-range aria-describedby="crew-ladder-note">
+        <ol class="crew-rungs" data-rungs></ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="crew-section crew-deck" aria-labelledby="crew-deck-h" data-reveal>
+    <div class="shell crew-deck-head">
+      <div>
+        <p class="crew-kicker">Monthly quota</p>
+        <h2 id="crew-deck-h" class="crew-h2">10 clips a month, minimum. No upper cap.</h2>
+        <p class="crew-body">Volume and variety are what move the algorithm. The quota is one clip for each of these 10 use cases, every month. Tap a card for the brief.</p>
+      </div>
+      <div class="crew-deck-nav" data-deck-nav hidden>
+        <span class="crew-deck-count" data-deck-count aria-live="polite">1–3 of 10</span>
+        <button type="button" class="crew-round" data-deck-prev aria-label="Previous cards"><span aria-hidden="true">←</span></button>
+        <button type="button" class="crew-round" data-deck-next aria-label="Next cards"><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <div class="crew-deck-track" role="list" data-deck aria-label="The 10 use cases"></div>
+  </section>
+
+  <section class="crew-section" aria-labelledby="crew-deal-h" data-reveal>
+    <div class="shell crew-deal">
+      <div>
+        <h2 id="crew-deal-h" class="crew-h2">The deal in three lines.</h2>
+        <p class="crew-body">You bring the audience and the content. We bring the product, the missions, the prize pool and payouts that land on time.</p>
+      </div>
+      <ol class="crew-deal-list">
+        <li><span><strong>10 clips a month, minimum.</strong> No cap. More clips mean more chances at every bonus.</span></li>
+        <li><span><strong>15–30% commission.</strong> Your audience saves 20–30%. Both numbers rise with your tier.</span></li>
+        <li><span><strong>Spark bonuses and Wildcards.</strong> Random drops, paid-ad bonuses, free shoes, recovery packs, and one $20k major prize every month.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="crew-section" aria-labelledby="crew-faq-h" data-reveal>
+    <div class="shell">
+      <h2 id="crew-faq-h" class="crew-h2">FAQ.</h2>
+      <div class="crew-faq">
+        <details><summary>How much can I actually earn each month?</summary><div>At Catalyst tier with 20 orders a month, commission alone is around $560. Add one mission win ($1,500), an adopted pitch ($1,000), a share of a community mission that landed ($150) and a Wildcard win ($500), and you're at $3,710 or more in a normal month. Top Reactors clear $10–15k in some months. The path to bigger numbers is missions and pitches, not chasing views.</div></details>
+        <details><summary>What do you mean by HEROs?</summary><div>HEX Crew has a tier above Reactor that we don't list publicly: HEROs. These are the creators we choose for in-house work, like sponsored athlete contracts, paid shoots, content director roles, named SKU launches and equity. We pick HEROs from inside the Crew based on how they show up over time. Apply to the Crew first.</div></details>
+        <details><summary>How do I log in and submit content?</summary><div>Sign in with your HEX store account. Shopify emails you a one-time code. For content, upload your files to Drive, Dropbox or WeTransfer, then paste the shared link into the onboarding form. Direct uploads aren't connected yet.</div></details>
+        <details><summary>How do I contact HEX?</summary><div>Use the onboarding or pitch form. Both go straight to the HEX team. Questions about your affiliate account still go through the GoAffPro portal.</div></details>
+        <details><summary>How do pitches and community missions work?</summary><div>Signed-in members can send a pitch from the Pitches &amp; Collabs tab, and it goes straight to the HEX team. Voting and the public pitch board aren't connected yet. Community missions are part of the programme model until that workflow is set up.</div></details>
+        <details><summary>Where do my affiliate earnings show?</summary><div>Referral reporting is in the HEX GoAffPro portal for now. Payout timing, the tier ladder and bonus rules will be confirmed in GoAffPro before they go live.</div></details>
+        <details><summary>What's the 10-clip quota for?</summary><div>Volume and variety are what move the algorithm. Ten different use cases a month gives us, and you, enough room to find what works. They're listed on the Monthly Quota tab. Post more than 10 if you like. There's no cap, and every extra clip is another chance at a viral bonus, a Spark bonus or a Wildcard.</div></details>
+        <details><summary>What happens if I don't hit 10?</summary><div>First miss: a friendly nudge from your Crew lead. Two missed months in a row: you drop a tier. Three: you're removed. We need creators who post, not creators who collect a sample box and go quiet. That's the deal both ways.</div></details>
+        <details><summary>Do I need a big following?</summary><div>No. There's no follower minimum to join as a Recruit. Higher tiers unlock as you drive sales, not as you grow followers. We've seen 800-follower creators out-earn 80k accounts because their tribe converts.</div></details>
+        <details><summary>What happens if HEX hits trouble?</summary><div>Creator payouts sit in a ring-fenced trust account, separate from operating cash. If HEX hits a wall, earned commissions are protected. This is a hard rule, made after watching Bang Energy creators go unpaid through bankruptcy.</div></details>
+        <details><summary>What about ACCC disclosure?</summary><div>Every post under a HEX mission must show #ad or #HEXpartner before the fold. We run automated compliance checks. Three undisclosed posts ends the partnership.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="crew-section" data-reveal data-final>
+    <div class="shell crew-final">
+      <p class="crew-final-line" aria-hidden="true">Shoot it <span>through.</span></p>
+      {% if crew_member %}
+      <button type="button" class="crew-btn crew-btn-primary" data-go="bonuses">Your missions <span class="crew-btn-arrow" aria-hidden="true">→</span></button>
+      {% else %}
+      <button type="button" class="crew-btn crew-btn-primary" data-go="onboarding">Apply to join <span class="crew-btn-arrow" aria-hidden="true">→</span></button>
+      {% endif %}
+    </div>
+  </section>
+
+  {% unless crew_member %}
+  <div class="crew-dock" data-dock aria-hidden="true">
+    <button type="button" class="crew-btn crew-btn-primary" data-go="onboarding" tabindex="-1">Apply to join <span class="crew-btn-arrow" aria-hidden="true">→</span></button>
+  </div>
+  {% endunless %}
+</section>
+
+<!-- ===================== 2. TIERS & EARNINGS ===================== -->
+<section class="view" id="tiers">
+  <div class="shell">
+    <div class="callout" style="margin-bottom:24px;"><strong>Programme model.</strong> The tier ladder below is the supplied target structure, not the current GoAffPro configuration. Live affiliate defaults are 15% commission and a 15% coupon.</div>
+    <span class="eyebrow">The ladder</span>
+    <h2 class="display">Sick % for you.<br/>Sick % for your audience.</h2>
+    <p class="lede">Four tiers. Climb on lifetime sales. Each step up raises your commission and your audience's discount. Reactor tier customers save 30%. That's a real "your code" discount you'll be proud to share.</p>
+
+    <div class="tier-grid">
+      <div class="tier-card">
+        <div class="tier-pill r"><span class="dot"></span> Tier 01</div>
+        <div class="tier-name">Recruit</div>
+        <div class="tier-threshold">Day one, open application</div>
+        <div class="tier-stack">
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Your commission</span>
+            <span class="tier-stack-val">15<small>%</small></span>
+          </div>
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Audience saves</span>
+            <span class="tier-stack-val" style="color:var(--blue);">20<small>%</small></span>
+          </div>
+        </div>
+        <ul class="tier-perks">
+          <li>Affiliate link &amp; code</li>
+          <li>Sample sachet kit</li>
+          <li>Mission board access</li>
+          <li>Discord (HEX HQ)</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-pill o"><span class="dot"></span> Tier 02</div>
+        <div class="tier-name">Operator</div>
+        <div class="tier-threshold">$2,000 referred · 90d</div>
+        <div class="tier-stack">
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Your commission</span>
+            <span class="tier-stack-val">20<small>%</small></span>
+          </div>
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Audience saves</span>
+            <span class="tier-stack-val" style="color:var(--blue);">20<small>%</small></span>
+          </div>
+        </div>
+        <ul class="tier-perks">
+          <li>Free product monthly</li>
+          <li>Spike-tier missions</li>
+          <li>Mystery Box draws</li>
+          <li>Co-branded merch kit</li>
+        </ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-pill c"><span class="dot"></span> Tier 03</div>
+        <div class="tier-name">Catalyst</div>
+        <div class="tier-threshold">$10,000 referred · 90d</div>
+        <div class="tier-stack">
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Your commission</span>
+            <span class="tier-stack-val" style="color:var(--gold);">25<small>%</small></span>
+          </div>
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Audience saves</span>
+            <span class="tier-stack-val" style="color:var(--gold);">25<small>%</small></span>
+          </div>
+        </div>
+        <ul class="tier-perks">
+          <li>Quarterly UGC retainer</li>
+          <li>Surge-tier missions</li>
+          <li>Free Runner draws (monthly)</li>
+          <li>Custom flavour vote</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-pill x"><span class="dot"></span> Tier 04</div>
+        <div class="tier-name">Reactor</div>
+        <div class="tier-threshold">$40,000 referred · top 50 only</div>
+        <div class="tier-stack">
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Your commission</span>
+            <span class="tier-stack-val" style="color:var(--terracotta);">30<small>%</small></span>
+          </div>
+          <div class="tier-stack-row">
+            <span class="tier-stack-label">Audience saves</span>
+            <span class="tier-stack-val" style="color:var(--terracotta);">30<small>%</small></span>
+          </div>
+        </div>
+        <ul class="tier-perks">
+          <li>Equity warrant (top 50)</li>
+          <li>$5k retainer base + comm</li>
+          <li>Featured on hexenergy.au</li>
+          <li>First call on collabs</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:64px;">
+      <span class="eyebrow terracotta">Small kicker, not the main game</span>
+      <h2 class="display">Views are a side bonus.<br/>Missions are where the real money is.</h2>
+      <p class="lede">We used to pay big for view milestones. We don't anymore. Views are too easy to chase and too hard to convert. Instead, every mission carries its own prize (next tab). A small kicker still exists on top, but it's the cherry, not the cake.</p>
+      <div class="card" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:center;padding:24px 32px;">
+        <div><div style="font-size:11px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">500k organic views</div><div style="font-size:28px;font-weight:700;letter-spacing:-1px;">+$500</div></div>
+        <div><div style="font-size:11px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">1M organic views</div><div style="font-size:28px;font-weight:700;letter-spacing:-1px;">+$1,000</div></div>
+        <div><div style="font-size:11px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">5M+ organic views</div><div style="font-size:28px;font-weight:700;letter-spacing:-1px;color:var(--gold);">+$2,500</div></div>
+      </div>
+      <p style="font-size:13px;color:var(--mute);margin-top:14px;">Capped on purpose. Mission prizes are the real game. See the next tab.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 3. MONTHLY QUOTA ===================== -->
+<section class="view" id="quota">
+  <div class="shell">
+    <div class="callout" style="margin-bottom:24px;"><strong>Interface model.</strong> Clip counters and monthly quota progress are not connected to a content database yet.</div>
+    <span class="eyebrow">The deal</span>
+    <h2 class="display">10 clips a month, minimum.<br/>No upper cap.</h2>
+    <p class="lede">Volume plus variety is what moves the algorithm. The quota is 10 distinct use cases per month, one clip for each. Post more if you want. Every extra clip is another shot at viral kickers, Spark bonuses, and Wildcard draws.</p>
+
+    <div class="card" style="background:var(--gold-soft);border-color:transparent;margin-bottom:48px;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:center;">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">The minimum</div>
+          <div style="font-size:64px;font-weight:700;letter-spacing:-2.5px;line-height:1;">10<span style="font-size:24px;font-weight:500;color:var(--mute);"> clips/mo</span></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">The ceiling</div>
+          <div style="font-size:64px;font-weight:700;letter-spacing:-2.5px;line-height:1;">∞</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Reset</div>
+          <div style="font-size:42px;font-weight:700;letter-spacing:-1.5px;line-height:1;">1st of month</div>
+          <div style="font-size:12px;color:var(--mute);margin-top:6px;">AWST · zero rollovers</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>The 10 use cases</h3>
+    <p style="font-size:15px;color:var(--mute);margin-bottom:24px;">One clip in each category covers the monthly quota. Mix formats: at least 3 vertical TikTok-native, 2 IG Reels, the rest your call.</p>
+
+    <div class="uc-grid">
+      <div class="uc-card">
+        <div class="uc-num">01 / 10</div>
+        <span class="uc-pill">Pre-session</span>
+        <h3>Warming up</h3>
+        <p>Dynamic warm-up, foam roll, band work, hip openers. Cracking the sachet as the last beat before the heavy stuff starts.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 15–30s</span><span><strong>Format</strong> Vertical, sound on</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">02 / 10</div>
+        <span class="uc-pill">Pre-session</span>
+        <h3>Stretching &amp; mobility</h3>
+        <p>Long-format. Run through your mobility routine. We use the best for tutorial-style carousels and longer ads. Audio matters.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 30–60s</span><span><strong>Format</strong> Vertical or carousel</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">03 / 10</div>
+        <span class="uc-pill">In-session</span>
+        <h3>Mid-session action</h3>
+        <p>The grit shot. Mid-set, mid-round, mid-rep. Sweat visible, breathing audible. The Reactor-tier clips usually live here.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 10–20s</span><span><strong>Format</strong> Vertical, single take</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">04 / 10</div>
+        <span class="uc-pill">In-session</span>
+        <h3>Consuming HEX</h3>
+        <p>The sachet crack. Pour into bottle or shaker. No talking, just clean audio of the rip and the pour. The signature HEX moment.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 5–10s</span><span><strong>Format</strong> Vertical, clean backdrop</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">05 / 10</div>
+        <span class="uc-pill">Post-session</span>
+        <h3>Cooldown</h3>
+        <p>Finish line, last rep done, gear off. The exhale moment. Audiences read this as honest. It's the trust beat.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 15–30s</span><span><strong>Format</strong> Vertical</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">06 / 10</div>
+        <span class="uc-pill">Recovery</span>
+        <h3>Recovery &amp; next-day</h3>
+        <p>Day-after content. Soreness check, recovery routine, foam roll, ice bath, sauna, walk. HEX in hand as the throughline.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 20–40s</span><span><strong>Format</strong> Vertical or photo carousel</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">07 / 10</div>
+        <span class="uc-pill">Lifestyle</span>
+        <h3>Morning ritual</h3>
+        <p>First HEX of the day. Alarm, kettle, sachet, out the door. It wins on relatability: audiences see their morning in yours.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 15–25s</span><span><strong>Format</strong> Vertical</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">08 / 10</div>
+        <span class="uc-pill">Lifestyle</span>
+        <h3>Pre-event ritual</h3>
+        <p>Pre-race, pre-fight, pre-set. The walk-out moment. Sachet crack as the last grounding beat before show-time.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 10–30s</span><span><strong>Format</strong> Vertical, dramatic</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">09 / 10</div>
+        <span class="uc-pill">Lifestyle</span>
+        <h3>Travel / on-the-road</h3>
+        <p>FIFO swing-back, festival lineup, work trip, surf trip. HEX out of a backpack. Sachet format is the whole edge here.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 15–30s</span><span><strong>Format</strong> Vertical</span></div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-num">10 / 10</div>
+        <span class="uc-pill">Story</span>
+        <h3>Side-by-side · before / after</h3>
+        <p>Split-screen, energy check at 3pm, "what HEX is actually doing." The honest receipt. Best for retention &amp; conversion.</p>
+        <div class="uc-meta"><span><strong>Duration</strong> 20–45s</span><span><strong>Format</strong> Split-screen, captioned</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h3>The math on extra clips.</h3>
+      <p>Quota is 10. The top Reactors usually file 30–50 clips a month. Every extra clip is one more shot at a viral kicker ($250–$25k), one more chance to win the Spark bonus ($500–$5k), and one more entry into the Wildcard draws. The 11th clip costs you nothing and could be the one that hits 5M views.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 4. MISSIONS & PRIZES ===================== -->
+<section class="view" id="bonuses">
+  <div class="shell">
+    <div class="callout" style="margin-bottom:24px;"><strong>Programme model.</strong> Mission, prize and wildcard values below require final commercial configuration before activation.</div>
+    <span class="eyebrow crimson">Missions &amp; prizes</span>
+    <h2 class="display">Every mission has its own prize.<br/>No view threshold required.</h2>
+    <p class="lede">We don't make you chase view counts to earn. Each mission carries a cash prize (and big stunts add a named item: gear, kicks, tickets or a custom SKU). Hit the brief, win the prize. Simple.</p>
+
+    <h3 style="margin-top:48px;">Always-on (Pulse): completion fees</h3>
+    <p style="font-size:14px;color:var(--mute);margin:0 0 16px;max-width:680px;">Low-bar, always-on briefs. Submit when you've got the clip. Every accepted submission pays the listed completion fee. No leaderboard, no lottery.</p>
+    <div class="mission-grid">
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type pulse"><span class="dot"></span> Pulse · always-on</span><span class="mission-tribe">Any tribe</span></div>
+        <h3>The Crack &amp; Pour</h3>
+        <p class="brief">Clean 5–10s clip of sachet open + pour. No talking. Just sound. We use the best for ads (with attribution + $50 license fee).</p>
+        <div class="mission-payout"><span class="pay">$75 per accepted</span><span class="clock">No cap</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type pulse"><span class="dot"></span> Pulse · always-on</span><span class="mission-tribe">Any tribe</span></div>
+        <h3>Morning ritual</h3>
+        <p class="brief">First HEX of the day. Kettle, sachet, out the door. Honest morning content. Win on relatability.</p>
+        <div class="mission-payout"><span class="pay">$50 per accepted</span><span class="clock">No cap</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type pulse"><span class="dot"></span> Pulse · always-on</span><span class="mission-tribe">Any tribe</span></div>
+        <h3>Sachet macro</h3>
+        <p class="brief">Close-up product detail shots. Texture, foil rip, pour. We use these for product-detail pages and zoom ads.</p>
+        <div class="mission-payout"><span class="pay">$100 per accepted</span><span class="clock">No cap</span></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:48px;">Weekly Spike: best clip wins the prize</h3>
+    <p style="font-size:14px;color:var(--mute);margin:0 0 16px;max-width:680px;">One winner per mission per week. Cash + a specific item. Runner-up still gets $100.</p>
+    <div class="mission-grid">
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type spike"><span class="dot"></span> Spike · weekly</span><span class="mission-tribe">Trail Crew</span></div>
+        <h3>Sunset at Cott</h3>
+        <p class="brief">Best HEX moment at Cottesloe between 5–8pm. Sun over the water. Hook in the first 1.5s.</p>
+        <div class="mission-payout"><span class="pay">$1,500 cash + custom Nike Vaporfly 3</span><span class="clock">4 days left</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type spike"><span class="dot"></span> Spike · weekly</span><span class="mission-tribe">Lift Crew</span></div>
+        <h3>Post-F45 fuel</h3>
+        <p class="brief">Best sachet crack in an F45 carpark, sweat still on. Tag your studio. We pick across all Perth F45s.</p>
+        <div class="mission-payout"><span class="pay">$1,000 cash + Theragun Prime</span><span class="clock">6 days left</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type spike"><span class="dot"></span> Spike · weekly</span><span class="mission-tribe">Combat Crew</span></div>
+        <h3>Round 3 refuel</h3>
+        <p class="brief">Between-rounds clip. Sachet open in the corner. Trainer doesn't say a word. Camera on you.</p>
+        <div class="mission-payout"><span class="pay">$1,500 cash + signed gloves (Perth pro)</span><span class="clock">9 days left</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type spike"><span class="dot"></span> Spike · weekly</span><span class="mission-tribe">Trail Crew</span></div>
+        <h3>Track Tuesday with PRC</h3>
+        <p class="brief">Perth Run Collective Tuesday session at Subiaco. Sachet on the warm-down. Pre-approved by club.</p>
+        <div class="mission-payout"><span class="pay">$750 cash + PRC merch pack</span><span class="clock">3 days left</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type spike"><span class="dot"></span> Spike · weekly</span><span class="mission-tribe">Grind Crew</span></div>
+        <h3>FIFO swing-back</h3>
+        <p class="brief">First day off roster. Sachet in hand, plane window or carpark. Show the swing rhythm.</p>
+        <div class="mission-payout"><span class="pay">$1,000 cash + flight credit ($500)</span><span class="clock">6 days left</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type spike"><span class="dot"></span> Spike · weekly</span><span class="mission-tribe">Night Crew</span></div>
+        <h3>Golden hour set</h3>
+        <p class="brief">Behind the decks, sundown, sachet visible. Audio matters. We'll re-edit with your set.</p>
+        <div class="mission-payout"><span class="pay">$750 cash + festival pass</span><span class="clock">5 days left</span></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:48px;">Monthly Surge: bigger brief, bigger prize</h3>
+    <p style="font-size:14px;color:var(--mute);margin:0 0 16px;max-width:680px;">Multi-day briefs. The winners are usually the storyline ones, not the single-shot ones.</p>
+    <div class="mission-grid">
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type surge"><span class="dot"></span> Surge · monthly</span><span class="mission-tribe">Lift Crew</span></div>
+        <h3>F45 Crawl</h3>
+        <p class="brief">Hit 5 different Perth F45s in one month. Document each with a unique clip. Storyline + variety wins.</p>
+        <div class="mission-payout"><span class="pay">$3,000 cash + 12 months F45</span><span class="clock">23 days left</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type surge"><span class="dot"></span> Surge · monthly</span><span class="mission-tribe">Trail Crew</span></div>
+        <h3>Dawn Surf Series</h3>
+        <p class="brief">4 dawn surfs at 4 different breaks (Trigg, Scarbs, Cott, Leighton). Same kit, same sachet ritual, different waves.</p>
+        <div class="mission-payout"><span class="pay">$2,500 cash + custom WA-shaper board</span><span class="clock">23 days left</span></div>
+      </div>
+      <div class="mission">
+        <div class="mission-head"><span class="mission-type surge"><span class="dot"></span> Surge · monthly</span><span class="mission-tribe">All tribes</span></div>
+        <h3>10-clip storyline</h3>
+        <p class="brief">Hit your 10-clip quota as one connected storyline, with the same character arc across all 10. The narrative one.</p>
+        <div class="mission-payout"><span class="pay">$2,000 cash + Mystery Box</span><span class="clock">23 days left</span></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:48px;">PR Stunts: cash plus named extras</h3>
+    <p style="font-size:14px;color:var(--mute);margin:0 0 16px;max-width:680px;">These are the lottery tickets. Pull them off and you're set. Most won't land. The one that does becomes a hex.au case study.</p>
+    <div class="mission-grid">
+      <div class="mission" style="border-color:var(--gold);">
+        <div class="mission-head"><span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Stunt · open-ended</span><span class="mission-tribe">All tribes</span></div>
+        <h3>Get HEX on Triple J</h3>
+        <p class="brief">Land a HEX mention on Triple J Breakfast or Drive, Perth or national. Verified clip + air date.</p>
+        <div class="mission-payout"><span class="pay">$5,000 cash + custom Vaporfly 3 + radio segment buy</span><span class="clock">Always open</span></div>
+      </div>
+      <div class="mission" style="border-color:var(--gold);">
+        <div class="mission-head"><span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Stunt · open-ended</span><span class="mission-tribe">All tribes</span></div>
+        <h3>Wildcats / Dockers / Eagles player + HEX</h3>
+        <p class="brief">Get a current Perth Wildcats, Dockers or Eagles player using HEX on game day, posted on their channel.</p>
+        <div class="mission-payout"><span class="pay">$5,000 cash + Reactor warrant + 4× season tickets</span><span class="clock">Always open</span></div>
+      </div>
+      <div class="mission" style="border-color:var(--gold);">
+        <div class="mission-head"><span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Stunt · annual</span><span class="mission-tribe">All tribes</span></div>
+        <h3>Hottest 100 at Cott</h3>
+        <p class="brief">First creator to land a verified HEX moment in Triple J Hottest 100 Day Cott coverage (Jan 26).</p>
+        <div class="mission-payout"><span class="pay">$7,500 cash + Cott trip for 4 + named SKU</span><span class="clock">Annual</span></div>
+      </div>
+      <div class="mission" style="border-color:var(--gold);">
+        <div class="mission-head"><span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Stunt · open-ended</span><span class="mission-tribe">All tribes</span></div>
+        <h3>AFL pre-game show</h3>
+        <p class="brief">Get HEX visible in an AFL pre-game segment (Fox, 7, Channel 9). Broadcast verified.</p>
+        <div class="mission-payout"><span class="pay">$10,000 cash + season pass + featured campaign</span><span class="clock">Always open</span></div>
+      </div>
+    </div>
+
+    <!-- WILDCARDS: TRIMMED, NOW SECONDARY -->
+    <div style="margin-top:80px;">
+      <span class="eyebrow">Random drops</span>
+      <h2 class="display">Wildcards stay.<br/>Just smaller, just for fun.</h2>
+      <p class="lede">Random drops are still part of the deal. They keep the daily Discord lively. They're no longer the headline. Mission prizes are. Wildcards are the sprinkles.</p>
+
+      <div class="wildcard-grid">
+        <div class="wildcard"><div class="wildcard-cadence">Weekly</div><h4>Wildcard Wednesday</h4><p>One random active creator wins straight cash. Posted this week = you're in.</p><div class="wildcard-val">$500<small>cash</small></div></div>
+        <div class="wildcard"><div class="wildcard-cadence">Monthly</div><h4>Mystery Box</h4><p>Random Catalyst+ creator. Contents change monthly. Sneakers, Theragun, cash.</p><div class="wildcard-val">$500–$2k<small>value</small></div></div>
+        <div class="wildcard"><div class="wildcard-cadence">Monthly</div><h4>Free Runners</h4><p>Vaporfly 3 or Alphafly 3. Drawn from quota-hitters.</p><div class="wildcard-val">$400<small>retail · multiple</small></div></div>
+        <div class="wildcard"><div class="wildcard-cadence">Quarterly</div><h4>Margie River weekend</h4><p>Top 10 creators flown down. Surf, run, sauna, dinner. We film it.</p><div class="wildcard-val">$2.5k<small>per head</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if customer %}
+<!-- ===================== 5. PITCHES & COLLABS ===================== -->
+<section class="view" id="pitches">
+  <div class="shell">
+    <span class="eyebrow">Pitch board</span>
+    <h2 class="display">Got an idea?<br/>Type it in. Get paid if we ship it.</h2>
+    <p class="lede">Every creator can pitch a mission, an activation, a flavour, or a collab target. The community votes weekly. When a pitch rises to the top and we ship it, the creator who proposed it gets paid. From $500 for a sharp mission idea to $5k+ for a collab that lands.</p>
+
+    <div class="card" style="padding:36px;background:var(--surface-2);margin:24px 0 32px;border:2px dashed var(--border-strong);">
+      <form method="post" action="{{ crew_path_prefix }}/pitch" id="HexCrewPitchForm" accept-charset="UTF-8">
+        <input type="hidden" name="crew_token" value="{{ crew_form_token }}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:14px;">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Submit a pitch</div>
+            <div style="font-size:18px;font-weight:700;letter-spacing:-0.4px;">{{ customer.name | default: customer.email | escape }}</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;color:var(--mute);">Native Shopify submission</div>
+        </div>
+        {% if crew_pitch_status == 'sent' %}
+          <div class="callout" role="status" style="margin-bottom:18px;"><strong>Pitch received.</strong> HEX will review it and get back to you.</div>
+        {% elsif crew_pitch_status == 'error' %}
+          <div class="callout" role="alert" style="margin-bottom:18px;"><strong>That didn't send.</strong> {{ crew_pitch_error }}</div>
+        {% endif %}
+        <div class="form-row">
+          <label for="HexCrewPitchEmail">Email</label>
+          <input id="HexCrewPitchEmail" type="email" value="{{ customer.email | escape }}" readonly>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label for="HexCrewPitchCategory">Category</label><input id="HexCrewPitchCategory" type="text" name="pitch[category]" maxlength="100" placeholder="Mission · Activation · Collab" required></div>
+          <div class="form-row"><label for="HexCrewPitchValue">Suggested value</label><input id="HexCrewPitchValue" type="text" name="pitch[value]" maxlength="50" placeholder="$500"></div>
+        </div>
+        <div class="form-row"><label for="HexCrewPitchTitle">Title</label><input id="HexCrewPitchTitle" type="text" name="pitch[title]" maxlength="200" placeholder="Give the idea a sharp name" required></div>
+        <div class="form-row"><label for="HexCrewPitchBody">The pitch</label><textarea id="HexCrewPitchBody" rows="4" name="pitch[body]" maxlength="5000" placeholder="What happens, where it happens and why HEX should back it." required></textarea></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:18px;flex-wrap:wrap;">
+          <div style="font-size:12px;color:var(--mute);">This sends the idea to HEX. It does not automatically publish it to the board below.</div>
+          <button class="btn btn-primary" type="submit">Submit pitch <span class="arrow">→</span></button>
+        </div>
+      </form>
+    </div>
+
+    <h3>Pitch-board concept</h3>
+    <div class="callout" style="margin-bottom:16px;"><strong>Sample interface.</strong> Votes, names, values and statuses below are not live community records.</div>
+    <p style="font-size:14px;color:var(--mute);margin:0 0 16px;max-width:680px;">Ranked by community votes this week. You get 5 votes per week. Spend them.</p>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:80px 1fr 130px 120px 120px;padding:16px 24px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">
+        <div>Votes</div><div>Pitch</div><div>By</div><div>Value</div><div>Status</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:80px 1fr 130px 120px 120px;padding:18px 24px;border-bottom:1px solid var(--border);align-items:center;">
+        <div style="font-size:24px;font-weight:700;letter-spacing:-0.8px;color:var(--gold);">89 ▲</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Dawn Patrol: all 4 metro breaks in one morning</div>
+          <div style="font-size:12px;color:var(--mute);margin-top:4px;">Mission · Trail Crew</div>
+        </div>
+        <div style="font-size:13px;">@nala_swims</div>
+        <div style="font-weight:700;">$1,000</div>
+        <div><span style="display:inline-block;font-size:11px;font-weight:600;background:var(--green);color:#fff;padding:4px 10px;border-radius:100px;">Adopted · paid</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:80px 1fr 130px 120px 120px;padding:18px 24px;border-bottom:1px solid var(--border);align-items:center;">
+        <div style="font-size:24px;font-weight:700;letter-spacing:-0.8px;color:var(--gold);">73 ▲</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">KX Pilates limited reformer-bag HEX</div>
+          <div style="font-size:12px;color:var(--mute);margin-top:4px;">Collab · KX Pilates · co-branded SKU</div>
+        </div>
+        <div style="font-size:13px;">@elliewfit</div>
+        <div style="font-weight:700;">$2,000</div>
+        <div><span style="display:inline-block;font-size:11px;font-weight:600;background:var(--gold);color:var(--ink);padding:4px 10px;border-radius:100px;">In review</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:80px 1fr 130px 120px 120px;padding:18px 24px;border-bottom:1px solid var(--border);align-items:center;">
+        <div style="font-size:24px;font-weight:700;letter-spacing:-0.8px;">47 ▲</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Pop-up at Castaway sunset stage</div>
+          <div style="font-size:12px;color:var(--mute);margin-top:4px;">Activation · Castaway Music Festival · Night Crew</div>
+        </div>
+        <div style="font-size:13px;">@rhys.k_combat</div>
+        <div style="font-weight:700;">$1,500</div>
+        <div><span style="display:inline-block;font-size:11px;font-weight:600;background:var(--blue);color:#fff;padding:4px 10px;border-radius:100px;">Voting</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:80px 1fr 130px 120px 120px;padding:18px 24px;border-bottom:1px solid var(--border);align-items:center;">
+        <div style="font-size:24px;font-weight:700;letter-spacing:-0.8px;">32 ▲</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">HEX in every Curtin/UWA library during exams</div>
+          <div style="font-size:12px;color:var(--mute);margin-top:4px;">Activation · Grind Crew · uni exam period</div>
+        </div>
+        <div style="font-size:13px;">@marlo.cooks</div>
+        <div style="font-weight:700;">$1,500</div>
+        <div><span style="display:inline-block;font-size:11px;font-weight:600;background:var(--blue);color:#fff;padding:4px 10px;border-radius:100px;">Voting</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:80px 1fr 130px 120px 120px;padding:18px 24px;border-bottom:1px solid var(--border);align-items:center;">
+        <div style="font-size:24px;font-weight:700;letter-spacing:-0.8px;">28 ▲</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Jarrah Honey field-trip mission (Manjimup)</div>
+          <div style="font-size:12px;color:var(--mute);margin-top:4px;">Mission · Trail · supply-chain content</div>
+        </div>
+        <div style="font-size:13px;">@kadehyde.fifo</div>
+        <div style="font-weight:700;">$800</div>
+        <div><span style="display:inline-block;font-size:11px;font-weight:600;background:var(--blue);color:#fff;padding:4px 10px;border-radius:100px;">Voting</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:80px 1fr 130px 120px 120px;padding:18px 24px;align-items:center;">
+        <div style="font-size:24px;font-weight:700;letter-spacing:-0.8px;">19 ▲</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Sunday morning kids' park run sponsorship</div>
+          <div style="font-size:12px;color:var(--mute);margin-top:4px;">Activation · Trail · community focus</div>
+        </div>
+        <div style="font-size:13px;">@jordan.moala</div>
+        <div style="font-weight:700;">$1,200</div>
+        <div><span style="display:inline-block;font-size:11px;font-weight:600;background:var(--mute);color:#fff;padding:4px 10px;border-radius:100px;">Voting</span></div>
+      </div>
+    </div>
+
+    <!-- COMMUNITY MISSIONS: SOCIAL LEVERAGE -->
+    <div style="margin-top:96px;">
+      <span class="eyebrow crimson">Community missions: social leverage</span>
+      <h2 class="display">We post the target.<br/>You help us close it.<br/>If it lands, everyone gets paid.</h2>
+      <p class="lede">This is the biggest mechanic in HEX Crew. We tell the community who we want to collab with. The community engages with tags, comments and posts. If the target says yes and the deal closes, every creator who participated splits the shared payout. Crowdsourced deal-closing. Real money for collective action.</p>
+
+      <div class="card" style="padding:32px;background:var(--ink);color:#fff;margin:24px 0 32px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;">
+          <div>
+            <div style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Step 01</div>
+            <div style="font-size:16px;font-weight:600;margin-bottom:6px;">HEX posts the target</div>
+            <div style="font-size:13px;color:#9a978d;line-height:1.5;">Brand, gym, athlete, venue, festival. We say what we want and what closing it would mean.</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Step 02</div>
+            <div style="font-size:16px;font-weight:600;margin-bottom:6px;">Community engages</div>
+            <div style="font-size:13px;color:#9a978d;line-height:1.5;">Tag the target, post about why it'd be sick, DM them. Public pressure builds.</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Step 03</div>
+            <div style="font-size:16px;font-weight:600;margin-bottom:6px;">Deal closes → everyone paid</div>
+            <div style="font-size:13px;color:#9a978d;line-height:1.5;">Shared payout split by engagement contribution. Top contributors get the biggest share.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Live community missions</h3>
+      <div class="mission-grid">
+        <div class="mission" style="border-color:var(--gold);">
+          <div class="mission-head">
+            <span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Community · live</span>
+            <span class="mission-tribe">All tribes</span>
+          </div>
+          <h3>Lock the Perth Wildcats deal</h3>
+          <p class="brief">Help us land HEX as an official Wildcats partner. Tag @perthwildcats with HEX in your gym/training content. Push them to try it.</p>
+          <div style="margin:14px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-bottom:6px;"><span>Engagement progress</span><span><strong style="color:var(--ink);">32,000</strong> / 50,000</span></div>
+            <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;"><div style="background:var(--gold);height:100%;width:64%;border-radius:100px;"></div></div>
+          </div>
+          <div class="mission-payout"><span class="pay">Shared pool: $20,000 if it lands</span><span class="clock">~$100/creator avg</span></div>
+        </div>
+
+        <div class="mission" style="border-color:var(--gold);">
+          <div class="mission-head">
+            <span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Community · live</span>
+            <span class="mission-tribe">Trail / Combat</span>
+          </div>
+          <h3>Get Nic Naitanui to try HEX</h3>
+          <p class="brief">Tag @nicnat. Make a clip explaining why. Comment under his posts. Get him to respond. 1,000 tags = we send him a box on-camera.</p>
+          <div style="margin:14px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-bottom:6px;"><span>Tag count</span><span><strong style="color:var(--ink);">740</strong> / 1,000</span></div>
+            <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;"><div style="background:var(--gold);height:100%;width:74%;border-radius:100px;"></div></div>
+          </div>
+          <div class="mission-payout"><span class="pay">Shared pool: $15,000 if Nic posts</span><span class="clock">No deadline</span></div>
+        </div>
+
+        <div class="mission" style="border-color:var(--gold);">
+          <div class="mission-head">
+            <span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Community · live</span>
+            <span class="mission-tribe">Trail Crew</span>
+          </div>
+          <h3>Cottesloe SLSC official drink</h3>
+          <p class="brief">Tag Cott SLSC in your training content. Show HEX on the beach. Get the club committee to consider us.</p>
+          <div style="margin:14px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-bottom:6px;"><span>Engagement progress</span><span><strong style="color:var(--ink);">3,200</strong> / 5,000</span></div>
+            <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;"><div style="background:var(--gold);height:100%;width:64%;border-radius:100px;"></div></div>
+          </div>
+          <div class="mission-payout"><span class="pay">Shared pool: $8,000 if it lands</span><span class="clock">~$80/creator avg</span></div>
+        </div>
+
+        <div class="mission" style="border-color:var(--gold);">
+          <div class="mission-head">
+            <span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Community · live</span>
+            <span class="mission-tribe">Night Crew</span>
+          </div>
+          <h3>El Grotto residency</h3>
+          <p class="brief">Tag @el_grotto in nightlife content. Pitch HEX as the official non-alc + mixer. Build the case publicly.</p>
+          <div style="margin:14px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-bottom:6px;"><span>Engagement progress</span><span><strong style="color:var(--ink);">5,800</strong> / 8,000</span></div>
+            <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;"><div style="background:var(--gold);height:100%;width:72%;border-radius:100px;"></div></div>
+          </div>
+          <div class="mission-payout"><span class="pay">Shared pool: $12,000 if it lands</span><span class="clock">Open</span></div>
+        </div>
+
+        <div class="mission" style="border-color:var(--gold);">
+          <div class="mission-head">
+            <span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Community · live</span>
+            <span class="mission-tribe">All tribes</span>
+          </div>
+          <h3>Scrappy MMA official fuel</h3>
+          <p class="brief">Combat creators, push HEX into Scrappy MMA. Tag them in fight prep content. Get the gym to officially range it.</p>
+          <div style="margin:14px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-bottom:6px;"><span>Engagement progress</span><span><strong style="color:var(--ink);">1,400</strong> / 3,000</span></div>
+            <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;"><div style="background:var(--gold);height:100%;width:46%;border-radius:100px;"></div></div>
+          </div>
+          <div class="mission-payout"><span class="pay">Shared pool: $6,000 if it lands</span><span class="clock">Open</span></div>
+        </div>
+
+        <div class="mission" style="border-color:var(--gold);">
+          <div class="mission-head">
+            <span class="mission-type" style="color:var(--gold);"><span class="dot" style="background:var(--gold);"></span> Community · live</span>
+            <span class="mission-tribe">All tribes</span>
+          </div>
+          <h3>Land the Boatshed front window</h3>
+          <p class="brief">Tag @boatshedmarket. Push for HEX to get the prime cold-case real estate. Locals know the front window changes the brand.</p>
+          <div style="margin:14px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-bottom:6px;"><span>Engagement progress</span><span><strong style="color:var(--ink);">920</strong> / 2,500</span></div>
+            <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;"><div style="background:var(--gold);height:100%;width:37%;border-radius:100px;"></div></div>
+          </div>
+          <div class="mission-payout"><span class="pay">Shared pool: $5,000 if it lands</span><span class="clock">Open</span></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h3>Why this is the biggest mechanic in HEX Crew.</h3>
+        <p style="margin-bottom:20px;">Community missions cost HEX nothing if the collab doesn't land. They pay out only on real outcomes. A $20k Wildcats payout unlocks $200k+ in annual co-branding, court signage and player content. That's a 10× return on the shared pool, and creators just bought themselves into the deal.</p>
+        <ul>
+          <li><strong>Crowdsourced deal-closing.</strong> HEX gets distribution wins it couldn't close alone.</li>
+          <li><strong>Pay-on-outcome.</strong> No payout if no deal. Aligns incentives both ways.</li>
+          <li><strong>Collective wins.</strong> Discord goes off when one of these lands. The dopamine compounds.</li>
+          <li><strong>Distributed advocacy.</strong> 200 creators tagging is louder than a $20k Sydney agency.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endif %}
+
+{% if customer and crew_leaderboard != 'hide' %}
+<!-- ===================== 6. LEADERBOARD ===================== -->
+<section class="view{% if crew_leaderboard == 'blur' %} crew-blurred{% endif %}" id="leaderboard">
+  <div class="shell">
+    {% if crew_leaderboard == 'blur' %}<div class="crew-blur-note">Leaderboard opens soon</div>{% endif %}
+    <div class="callout" style="margin-bottom:24px;"><strong>Sample interface.</strong> Names, positions, totals and payouts shown here are a display model until a live reporting feed is connected.</div>
+    <span class="eyebrow">The board</span>
+    <h2 class="display">Live leaderboard · May 2026.</h2>
+    <p class="lede">Sample board only. Automated ranking, season close and payout timing are not connected yet.</p>
+
+    <div class="tribe-tabs">
+      <div class="tribe-tab active">All Crew</div>
+      <div class="tribe-tab">Lift Crew</div>
+      <div class="tribe-tab">Trail Crew</div>
+      <div class="tribe-tab">Combat Crew</div>
+      <div class="tribe-tab">Night Crew</div>
+      <div class="tribe-tab">Grind Crew</div>
+    </div>
+
+    <div class="leaderboard">
+      <div class="lb-row head">
+        <div>Rank</div><div>Creator</div><div>Clips</div><div>Sales</div><div>Views</div><div>Earned</div>
+      </div>
+      <div class="lb-row r1">
+        <div class="rank"><span class="rank-dot"></span>01</div>
+        <div class="lb-creator"><div class="lb-avatar">TS</div><div><div class="lb-name">Tahlia Skye</div><div class="lb-handle">@tahliaskye · Trail</div></div></div>
+        <div class="lb-clips"><strong>34</strong>/10</div>
+        <div class="lb-num">$48,200</div>
+        <div class="lb-views">3.2M</div>
+        <div class="lb-earned">$14,460</div>
+      </div>
+      <div class="lb-row r2">
+        <div class="rank"><span class="rank-dot"></span>02</div>
+        <div class="lb-creator"><div class="lb-avatar">JM</div><div><div class="lb-name">Jordan Moala</div><div class="lb-handle">@jordan.moala · Lift</div></div></div>
+        <div class="lb-clips"><strong>28</strong>/10</div>
+        <div class="lb-num">$41,800</div>
+        <div class="lb-views">2.7M</div>
+        <div class="lb-earned">$12,540</div>
+      </div>
+      <div class="lb-row r3">
+        <div class="rank"><span class="rank-dot"></span>03</div>
+        <div class="lb-creator"><div class="lb-avatar">RK</div><div><div class="lb-name">Rhys Kalani</div><div class="lb-handle">@rhys.k_combat · Combat</div></div></div>
+        <div class="lb-clips"><strong>41</strong>/10</div>
+        <div class="lb-num">$34,950</div>
+        <div class="lb-views">4.1M</div>
+        <div class="lb-earned">$10,485</div>
+      </div>
+      <div class="lb-row">
+        <div class="rank">04</div>
+        <div class="lb-creator"><div class="lb-avatar">EW</div><div><div class="lb-name">Ellie Whitcombe</div><div class="lb-handle">@elliewfit · Lift</div></div></div>
+        <div class="lb-clips"><strong>22</strong>/10</div>
+        <div class="lb-num">$22,100</div>
+        <div class="lb-views">1.4M</div>
+        <div class="lb-earned">$5,525</div>
+      </div>
+      <div class="lb-row">
+        <div class="rank">05</div>
+        <div class="lb-creator"><div class="lb-avatar">DC</div><div><div class="lb-name">Diesel Caruso</div><div class="lb-handle">@dieselcaruso · Night</div></div></div>
+        <div class="lb-clips"><strong>15</strong>/10</div>
+        <div class="lb-num">$18,300</div>
+        <div class="lb-views">920k</div>
+        <div class="lb-earned">$4,575</div>
+      </div>
+      <div class="lb-row">
+        <div class="rank">06</div>
+        <div class="lb-creator"><div class="lb-avatar">KH</div><div><div class="lb-name">Kade Hyde</div><div class="lb-handle">@kadehyde.fifo · Grind</div></div></div>
+        <div class="lb-clips"><strong>18</strong>/10</div>
+        <div class="lb-num">$14,750</div>
+        <div class="lb-views">680k</div>
+        <div class="lb-earned">$2,950</div>
+      </div>
+      <div class="lb-row">
+        <div class="rank">07</div>
+        <div class="lb-creator"><div class="lb-avatar">NB</div><div><div class="lb-name">Nala Brennan</div><div class="lb-handle">@nala_swims · Trail</div></div></div>
+        <div class="lb-clips"><strong>12</strong>/10</div>
+        <div class="lb-num">$12,100</div>
+        <div class="lb-views">540k</div>
+        <div class="lb-earned">$2,420</div>
+      </div>
+      <div class="lb-row">
+        <div class="rank">08</div>
+        <div class="lb-creator"><div class="lb-avatar">MT</div><div><div class="lb-name">Marlo Teng</div><div class="lb-handle">@marlo.cooks · Grind</div></div></div>
+        <div class="lb-clips"><strong>11</strong>/10</div>
+        <div class="lb-num">$9,800</div>
+        <div class="lb-views">410k</div>
+        <div class="lb-earned">$1,960</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h3>Three days until May closes.</h3>
+      <p>Top of every tribe gets the $1,000 cash kicker. The top creator overall (Tahlia, you're up) gets $10k, a Rotto trip for four, and front-page feature on hexenergy.au.</p>
+    </div>
+  </div>
+</section>
+
+{% endif %}
+
+{% if customer and crew_creator_view != 'hide' %}
+<!-- ===================== 7. CREATOR DASHBOARD ===================== -->
+<section class="view" id="dashboard">
+  <div class="shell">
+    <div class="callout" style="margin-bottom:24px;"><strong>Sample interface.</strong> Dashboard figures, earnings and progress below are not live account records yet. Use GoAffPro for current affiliate reporting.</div>
+    <span class="eyebrow">Creator view</span>
+    <h2 class="display">What you see when you log in.</h2>
+    <p class="lede">Sample view only. Live affiliate earnings stay in GoAffPro, and clip quota tracking still needs a content database.</p>
+
+    <div class="dash-grid">
+      <div class="dash-sidebar">
+        <div class="dash-avatar">TS</div>
+        <div class="dash-name">Tahlia Skye</div>
+        <div class="dash-handle">@tahliaskye · Trail Crew</div>
+        <div class="dash-tier">Catalyst · 25%</div>
+        <ul class="dash-nav">
+          <li class="act">Overview</li>
+          <li>Monthly quota</li>
+          <li>G Drive folder ↗</li>
+          <li>Sales &amp; commission</li>
+          <li>Payouts</li>
+          <li>My pitches</li>
+          <li>Community missions</li>
+          <li>Wildcard draws</li>
+          <li>Contact HEX through the portal</li>
+        </ul>
+        <div class="next-tier-note">
+          <strong>Next tier: Reactor</strong>
+          $40k referred required.<br/>
+          You're at $48.2k. Unlock pending.
+        </div>
+      </div>
+
+      <div class="dash-main">
+        <div class="dash-kpis">
+          <div class="dash-kpi">
+            <div class="kpi-l">May earned</div>
+            <div class="kpi-n">$14,460</div>
+            <div class="kpi-d">↑ 38% vs Apr</div>
+          </div>
+          <div class="dash-kpi">
+            <div class="kpi-l">Sales driven</div>
+            <div class="kpi-n">$48.2k</div>
+            <div class="kpi-d">↑ 412 orders</div>
+          </div>
+          <div class="dash-kpi">
+            <div class="kpi-l">Organic views</div>
+            <div class="kpi-n">3.2M</div>
+            <div class="kpi-d">↑ 22 posts</div>
+          </div>
+          <div class="dash-kpi">
+            <div class="kpi-l">Crew rank</div>
+            <div class="kpi-n">#1</div>
+            <div class="kpi-d">Trail Crew leader</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3>Monthly quota tracker · May</h3>
+          <div class="quota-tracker">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;">
+              <div style="font-size:28px;font-weight:700;letter-spacing:-1px;"><span style="color:var(--green);">34</span>/10 clips</div>
+              <div style="font-size:13px;color:var(--mute);">Quota smashed · 24 extras counting toward bonuses</div>
+            </div>
+            <div class="quota-bar">
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+              <div class="quota-pill done"></div>
+            </div>
+            <div class="quota-foot">
+              <span>10 use cases · all covered</span>
+              <span>+24 extra clips</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3>Pending payouts</h3>
+          <div class="payout-row">
+            <div><div class="src">Affiliate commission · w/c 18 May</div><div class="meta">412 verified orders</div></div>
+            <div><span class="status-pill paid">Paid</span></div>
+            <div class="meta">26 May</div>
+            <div class="amt">$10,310</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Viral bonus · Sunset at Cott</div><div class="meta">1.8M views verified</div></div>
+            <div><span class="status-pill paid">Paid</span></div>
+            <div class="meta">24 May</div>
+            <div class="amt">$3,000</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Spark bonus · #1 paid ad performer</div><div class="meta">CPA $4.20 · 3.8x ROAS</div></div>
+            <div><span class="status-pill pending">Confirmed · paying 1 Jun</span></div>
+            <div class="meta">1 Jun</div>
+            <div class="amt">$5,000</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Wildcard Wednesday win · 22 May</div><div class="meta">Random draw, congrats</div></div>
+            <div><span class="status-pill paid">Paid</span></div>
+            <div class="meta">23 May</div>
+            <div class="amt">$500</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Affiliate clawback hold</div><div class="meta">Releases 30d after order</div></div>
+            <div><span class="status-pill locked">Locked</span></div>
+            <div class="meta">12 Jun</div>
+            <div class="amt">$1,030</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3>My pitches</h3>
+          <div class="payout-row">
+            <div><div class="src">Dawn Patrol: all 4 metro breaks</div><div class="meta">89 votes · adopted by HEX</div></div>
+            <div><span class="status-pill paid">Adopted</span></div>
+            <div class="meta">Paid 21 May</div>
+            <div class="amt">$1,000</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Rotto Channel Swim training mission</div><div class="meta">62 votes · in HEX review</div></div>
+            <div><span class="status-pill pending">In review</span></div>
+            <div class="meta">Not yet</div>
+            <div class="amt">$1,500</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Sunset run podcast collab</div><div class="meta">41 votes · still voting</div></div>
+            <div><span class="status-pill pending">Voting</span></div>
+            <div class="meta">Not yet</div>
+            <div class="amt">$800</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3>Community missions I'm in</h3>
+          <div class="payout-row">
+            <div><div class="src">Perth Wildcats deal</div><div class="meta">Your contribution: 412 tags · top 8% engagement</div></div>
+            <div><span class="status-pill pending">Live · 64%</span></div>
+            <div class="meta">If lands</div>
+            <div class="amt">~$480 est.</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Cottesloe SLSC official drink</div><div class="meta">Your contribution: 220 tags · top 12%</div></div>
+            <div><span class="status-pill pending">Live · 64%</span></div>
+            <div class="meta">If lands</div>
+            <div class="amt">~$200 est.</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Nic Naitanui posts back</div><div class="meta">Your contribution: 38 tags · mid-pack</div></div>
+            <div><span class="status-pill pending">Live · 74%</span></div>
+            <div class="meta">If lands</div>
+            <div class="amt">~$120 est.</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3>Wildcard eligibility this week</h3>
+          <div class="payout-row">
+            <div><div class="src">Wildcard Wednesday</div><div class="meta">Quota hit · eligible</div></div>
+            <div><span class="status-pill paid">In draw</span></div>
+            <div class="meta">28 May</div>
+            <div class="amt">$500</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Mystery Box</div><div class="meta">Catalyst tier · eligible</div></div>
+            <div><span class="status-pill paid">In draw</span></div>
+            <div class="meta">30 May</div>
+            <div class="amt">$500–$2k</div>
+          </div>
+          <div class="payout-row">
+            <div><div class="src">Free Runner draw (Trail)</div><div class="meta">Quota hit · 10 entries (clip count)</div></div>
+            <div><span class="status-pill paid">In draw</span></div>
+            <div class="meta">31 May</div>
+            <div class="amt">$400 retail</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endif %}
+
+<!-- ===================== 9. ONBOARDING ===================== -->
+<section class="view" id="onboarding">
+  <div class="shell">
+    <span class="eyebrow">Intake</span>
+    <h2 class="display">Welcome to HEX Crew.</h2>
+    <p class="lede">Five clips become your athlete card. Complete the fields, add one shared Drive, Dropbox or WeTransfer link, then send the intake directly to HEX through Shopify.</p>
+
+    <!-- LIVE ACCOUNT + CONTENT LINK + AFFILIATE ACCESS -->
+    <div class="card-grid-3" style="margin-bottom:40px;">
+      <div class="card" style="background:var(--ink);color:#fff;border-color:var(--ink);">
+        <div style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">01 · Shopify account</div>
+        <h4 style="margin-top:0;color:#fff;font-size:17px;">Customer sign in</h4>
+        <p style="font-size:13px;color:#9a978d;margin:8px 0 14px;line-height:1.6;">Shopify sends a one-time code to your email. Orders and customer details stay inside the store account structure.</p>
+        <a class="btn" href="{{ routes.account_login_url }}" style="background:#fff;color:var(--ink);">Open Shopify sign in</a>
+      </div>
+      <div class="card" style="background:var(--surface);border-color:var(--border);">
+        <div style="font-size:11px;color:var(--blue);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">02 · Your content link</div>
+        <h4 style="margin-top:0;font-size:17px;">One shared folder or transfer link</h4>
+        <p style="font-size:13px;color:var(--mute);margin:8px 0 14px;line-height:1.6;">Upload your five clips to Drive, Dropbox or WeTransfer, set access so HEX can view it, then paste the link in the final step.</p>
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;color:var(--mute);background:var(--surface-2);padding:8px 12px;border-radius:6px;border:1px solid var(--border);">https://drive.google.com/...</div>
+      </div>
+      <div class="card" style="background:var(--gold);color:var(--ink);border-color:var(--gold);">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;opacity:0.8;">03 · Affiliate access</div>
+        <h4 style="margin-top:0;font-size:17px;">GoAffPro portal</h4>
+        <p style="font-size:13px;margin:8px 0 14px;line-height:1.6;">Affiliate applications, referral links and tracked commissions use the separate HEX GoAffPro portal.</p>
+        <a class="btn" href="https://hexenergy.goaffpro.com/create-account" target="_blank" rel="noopener" style="background:var(--ink);color:#fff;">Open affiliate application</a>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:0;margin-bottom:40px;padding:32px;">
+      <h3 style="font-size:24px;margin-bottom:8px;">Live your life. Record here and there. Shoot it through.</h3>
+      <p style="font-size:15px;">You're not making content for HEX. You're filming what you already do, dropping it in your folder, and letting the system match it to missions and prizes. The 10-clip quota is a minimum because volume + variety wins the algorithm. Past that: keep going if you want, stop if life gets in the way. The platform doesn't punish you for being human.</p>
+    </div>
+
+    <form method="post" action="{{ crew_path_prefix }}/onboarding" id="HexCrewOnboardingForm" accept-charset="UTF-8">
+      <input type="hidden" name="crew_token" value="{{ crew_form_token }}">
+      <input type="text" name="crew_website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+      {% if crew_onboarding_status == 'sent' %}
+        <div class="callout" role="status" style="margin-bottom:24px;"><strong>Application received.</strong> HEX will review your intake. Affiliate access remains in GoAffPro.</div>
+      {% elsif crew_onboarding_status == 'error' %}
+        <div class="callout" role="alert" style="margin-bottom:24px;"><strong>That didn't send.</strong> {{ crew_onboarding_error }}</div>
+      {% endif %}
+
+    <div class="onb-stepper">
+      <div class="onb-step active" data-step="1"><div class="step-n">Clip 01</div><div class="step-name">Athlete intro</div></div>
+      <div class="onb-step" data-step="2"><div class="step-n">Clip 02</div><div class="step-name">Mid-workout</div></div>
+      <div class="onb-step" data-step="3"><div class="step-n">Clip 03</div><div class="step-name">The sachet crack</div></div>
+      <div class="onb-step" data-step="4"><div class="step-n">Clip 04</div><div class="step-name">What you train for</div></div>
+      <div class="onb-step" data-step="5"><div class="step-n">Clip 05</div><div class="step-name">Favourite quote</div></div>
+    </div>
+
+    <div class="onb-content active" data-step="1">
+      <h3>Clip 01: Athlete intro</h3>
+      <p class="lede">This is the card the rest of HEX Crew sees when you join. Treat it like a UFC walk-in tape, an AFL highlight reel, a surfer's bio reel.</p>
+      <div class="clip-spec">
+        <div class="clip-tag"><span class="name">Clip 01</span><span class="duration">15–30 sec · vertical</span></div>
+        <h4>What we want</h4>
+        <p class="what">Look down the barrel. Say your name, what tribe you rep, where you train, and one line about what makes you different. Confident, not performed.</p>
+        <h5>Beats, in order</h5>
+        <ul>
+          <li><strong>0–2s hook:</strong> action shot: running, lifting, sparring, decks, paddling out</li>
+          <li><strong>2–8s:</strong> face to camera: "I'm [name], [tribe], training out of [gym / club / spot]"</li>
+          <li><strong>8–18s:</strong> the differentiator: "I'm building toward [goal]"</li>
+          <li><strong>18–25s:</strong> close on a frame that holds: silhouette, sunrise, the sachet</li>
+        </ul>
+        <div class="pro-tip"><strong>Pro tip.</strong> Filmed at your training spot at first light. Cott pier, Trigg point, the F45 carpark before class. Locals immediately know you're real.</div>
+      </div>
+      <div class="form-row"><label for="HexCrewName">Name (as you want it shown)</label><input id="HexCrewName" type="text" name="apply[name]" maxlength="100" value="{{ customer.name | escape }}" placeholder="e.g. Tahlia Skye" autocomplete="name" required></div>
+      <div class="form-row"><label for="HexCrewEmail">Email</label><input id="HexCrewEmail" type="email" name="apply[email]" maxlength="200" value="{{ customer.email | escape }}"{% if customer %} readonly{% endif %} placeholder="you@example.com" autocomplete="email" required></div>
+      <div class="form-grid-2">
+        <div class="form-row"><label for="HexCrewTribe">Tribe</label><input id="HexCrewTribe" type="text" name="apply[tribe]" maxlength="50" placeholder="Trail · Lift · Combat · Night · Grind" required></div>
+        <div class="form-row"><label for="HexCrewTraining">Where you train</label><input id="HexCrewTraining" type="text" name="apply[training]" maxlength="150" placeholder="Cottesloe · Scrappy MMA · F45 Mt Lawley" required></div>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="nextStep()">Next: Clip 02 <span class="arrow">→</span></button>
+    </div>
+
+    <div class="onb-content" data-step="2">
+      <h3>Clip 02: Mid-workout</h3>
+      <p class="lede">The grit shot. We need to see you in the work: sweating, breathing, mid-rep, mid-round, mid-set, mid-paddle. Effort over polish.</p>
+      <div class="clip-spec">
+        <div class="clip-tag"><span class="name">Clip 02</span><span class="duration">10–20 sec · vertical</span></div>
+        <h4>What we want</h4>
+        <p class="what">A single take. Camera locked off or moving with you. No filters, no slow-mo. Sound on. We want the breathing.</p>
+        <h5>Acceptable formats by tribe</h5>
+        <ul>
+          <li><strong>Lift:</strong> last three reps of a heavy set. The grind ones.</li>
+          <li><strong>Trail:</strong> last 200m of a track rep, duck-diving a set, or 1km out from shore on an ocean swim.</li>
+          <li><strong>Combat:</strong> a round of pads or sparring. Face shown when you reset.</li>
+          <li><strong>Night:</strong> mid-set behind the decks, sweat visible, crowd in shot if possible.</li>
+          <li><strong>Grind:</strong> on-site shot. Scaffolding, FIFO mess hall, kitchen pass.</li>
+        </ul>
+        <div class="pro-tip"><strong>Pro tip.</strong> Mount your phone on a tripod 1–2m back. The most-watched HEX clips had the phone too close. You could feel the breath.</div>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="nextStep()">Next: Clip 03 <span class="arrow">→</span></button>
+    </div>
+
+    <div class="onb-content" data-step="3">
+      <h3>Clip 03: The sachet crack</h3>
+      <p class="lede">The signature HEX moment. Every brand needs an action that becomes shorthand for the brand. For HEX, it's the sachet open and pour.</p>
+      <div class="clip-spec">
+        <div class="clip-tag"><span class="name">Clip 03</span><span class="duration">5–10 sec · vertical</span></div>
+        <h4>What we want</h4>
+        <p class="what">Vertical. Sachet in your hands. Tear it open clean. Pour into your bottle, shaker or glass. Crisp audio of the rip and the pour. Sachet readable on screen for at least 1.5 seconds.</p>
+        <h5>The HEX choreography</h5>
+        <ul>
+          <li><strong>0–2s.</strong> Sachet in frame: held up, label readable</li>
+          <li><strong>2–5s.</strong> Rip: clean, single motion, audio crisp</li>
+          <li><strong>5–8s.</strong> Pour: bottle, shaker, or glass</li>
+          <li><strong>8–10s.</strong> Close: cap on, shake, ready to go</li>
+        </ul>
+        <div class="pro-tip"><strong>Pro tip.</strong> The sachet is the hero. Clean backdrop: gym wall, dawn beach, kitchen bench. The best of these become paid ads with attribution + $50 license fee per use.</div>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="nextStep()">Next: Clip 04 <span class="arrow">→</span></button>
+    </div>
+
+    <div class="onb-content" data-step="4">
+      <h3>Clip 04: What you train for</h3>
+      <p class="lede">The "why." This separates a creator who lasts from a creator who churns. Show us the goal. The thing in the distance.</p>
+      <div class="clip-spec">
+        <div class="clip-tag"><span class="name">Clip 04</span><span class="duration">20–40 sec · vertical</span></div>
+        <h4>What we want</h4>
+        <p class="what">Look down the barrel. Tell us the goal: the race, the fight, the championship, the line you want to surf. Be specific.</p>
+        <h5>Good examples</h5>
+        <ul>
+          <li><em>"Training for the 2027 Rottnest Channel Swim. Solo. Sub-7 hours."</em></li>
+          <li><em>"I want a 6-minute mile by December. I'm at 6:42 today."</em></li>
+          <li><em>"First amateur MMA bout in 14 weeks. 70kg division."</em></li>
+        </ul>
+        <h5>Avoid</h5>
+        <ul class="bad">
+          <li>"Just want to be the best version of myself" (too vague)</li>
+          <li>Generic "consistency is everything" (won't land)</li>
+        </ul>
+        <div class="pro-tip"><strong>Pro tip.</strong> Specificity is the algorithm's friend. A real date + a real number + a real venue beats general motivation every time.</div>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="nextStep()">Next: Clip 05 <span class="arrow">→</span></button>
+    </div>
+
+    <div class="onb-content" data-step="5">
+      <h3>Clip 05: Favourite quote</h3>
+      <p class="lede">The closer. The line you live by. We pin it on your athlete card and re-use it in your launch graphic.</p>
+      <div class="clip-spec">
+        <div class="clip-tag"><span class="name">Clip 05</span><span class="duration">10–20 sec · vertical</span></div>
+        <h4>What we want</h4>
+        <p class="what">Phone close, dead-on. Say the quote slowly. Then say who said it, or "me." One take.</p>
+        <h5>What lands</h5>
+        <ul>
+          <li>Quotes that don't sound like quotes: things people actually say</li>
+          <li>From your coach, your old man, a teammate, a song lyric</li>
+        </ul>
+        <h5>What doesn't land</h5>
+        <ul class="bad">
+          <li>Anything off a gym wall poster</li>
+          <li>"Pain is temporary, glory is forever"</li>
+          <li>Anything Marcus Aurelius (every fitness creator opens with him)</li>
+        </ul>
+        <div class="pro-tip"><strong>Pro tip.</strong> The best are local and specific. "The Doctor always shows up." "Pull yourself off the line." "If you can hear the crowd, you're not in deep enough."</div>
+      </div>
+      <div class="form-row"><label for="HexCrewQuote">The quote</label><textarea id="HexCrewQuote" rows="2" name="apply[quote]" maxlength="300" placeholder="e.g. The Doctor always shows up."></textarea></div>
+      <div class="form-row"><label for="HexCrewQuoteSource">Who said it</label><input id="HexCrewQuoteSource" type="text" name="apply[quote_source]" maxlength="100" placeholder="My coach · My nan · Me · A song"></div>
+      <div class="form-row"><label for="HexCrewContentLink">Photo or video folder link</label><input id="HexCrewContentLink" type="url" name="apply[content_link]" maxlength="500" placeholder="Shared Drive, Dropbox or WeTransfer link" required><div style="font-size:12px;color:var(--mute);margin-top:6px;">Set link access so HEX can view the files.</div></div>
+      <button class="btn btn-primary" type="submit">Submit my athlete card <span class="arrow">→</span></button>
+    </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <strong>HEX Crew</strong> · by HEX Energy · Perth, WA
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('HexCrewV4-main');
+  if (!root) return;
+
+  function setStep(n) {
+    root.querySelectorAll('.onb-step').forEach(function (step) {
+      step.classList.toggle('active', parseInt(step.dataset.step, 10) === n);
+    });
+    root.querySelectorAll('.onb-content').forEach(function (panel) {
+      panel.classList.toggle('active', parseInt(panel.dataset.step, 10) === n);
+    });
+  }
+
+  function nextStep() {
+    var active = root.querySelector('.onb-step.active');
+    var current = active ? parseInt(active.dataset.step, 10) : 1;
+    if (current < 5) setStep(current + 1);
+  }
+
+  window.nextStep = nextStep;
+  window.goTab = goTab;
+
+  function goTab(name) {
+    var button = root.querySelector('.tab-btn[data-tab="' + name + '"]');
+    var view = root.querySelector('#' + name);
+
+    if (!button || !view) {
+      name = 'recruit';
+      button = root.querySelector('.tab-btn[data-tab="recruit"]');
+      view = root.querySelector('#recruit');
+    }
+
+    root.querySelectorAll('.tab-btn').forEach(function (item) { item.classList.remove('active'); });
+    root.querySelectorAll('.view').forEach(function (item) { item.classList.remove('active'); });
+
+    if (button) button.classList.add('active');
+    if (view) view.classList.add('active');
+
+    try { sessionStorage.setItem('hex_crew_v4_tab', name); } catch (error) {}
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
+
+  root.querySelectorAll('.tab-btn').forEach(function (button) {
+    button.addEventListener('click', function () { goTab(button.dataset.tab); });
+  });
+
+  root.querySelectorAll('.onb-step').forEach(function (step) {
+    step.addEventListener('click', function () { setStep(parseInt(step.dataset.step, 10)); });
+  });
+
+  root.querySelectorAll('.faq-q').forEach(function (question) {
+    question.addEventListener('click', function () { question.parentElement.classList.toggle('open'); });
+  });
+
+  root.querySelectorAll('.tribe-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      root.querySelectorAll('.tribe-tab').forEach(function (item) { item.classList.remove('active'); });
+      tab.classList.add('active');
+    });
+  });
+
+  var onboardingForm = root.querySelector('#HexCrewOnboardingForm');
+  if (onboardingForm) {
+    onboardingForm.addEventListener('invalid', function (event) {
+      var panel = event.target.closest('.onb-content');
+      if (panel) setStep(parseInt(panel.dataset.step, 10));
+    }, true);
+  }
+
+  try {
+    var saved = sessionStorage.getItem('hex_crew_v4_tab');
+    if (saved) goTab(saved);
+  } catch (error) {}
+  {% if crew_return_tab != blank %}
+  goTab('{{ crew_return_tab }}');
+  // Replace the form-post entry so a refresh reloads the portal instead of re-sending the pitch.
+  try { history.replaceState(null, '', '{{ crew_path_prefix }}'); } catch (error) {}
+  {% endif %}
+})();
+</script>
+<script>
+/* HEX Crew v2 landing. Reads missions, tiers and quota briefs from the other
+   tabs so Matt's content has one source of truth. */
+(function () {
+  var root = document.getElementById('HexCrewV4-main');
+  if (!root) return;
+  root.classList.add('crew-js');
+
+  var ASSET = {{ crew_asset_base | json }};
+  var SERVER_TRIBE = {{ crew_tribe | json }};
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var text = function (el, sel) {
+    var node = sel ? el.querySelector(sel) : el;
+    return node ? node.textContent.replace(/\s+/g, ' ').trim() : '';
+  };
+  var esc = function (s) {
+    return String(s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; });
+  };
+  var all = function (sel, scope) { return Array.prototype.slice.call((scope || root).querySelectorAll(sel)); };
+
+  /* ---------- Tabs: indicator, aria-current, history, focus ---------- */
+  var navInner = root.querySelector('nav.tabs .inner');
+  var navIndicator = document.createElement('span');
+  navIndicator.className = 'crew-tab-indicator';
+  navIndicator.setAttribute('aria-hidden', 'true');
+  if (navInner) navInner.appendChild(navIndicator);
+  function syncNav() {
+    var active = navInner && navInner.querySelector('.tab-btn.active');
+    all('nav.tabs .tab-btn').forEach(function (b) {
+      if (b === active) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
+    if (!active) { navIndicator.style.opacity = '0'; return; }
+    navIndicator.style.opacity = '1';
+    navIndicator.style.transform = 'translateX(' + active.offsetLeft + 'px) scaleX(' + active.offsetWidth + ')';
+  }
+  var baseGoTab = window.goTab;
+  var tabNames = all('nav.tabs .tab-btn').map(function (b) { return b.dataset.tab; });
+  function focusView(name) {
+    var view = root.querySelector('#' + name);
+    var heading = view && (view.querySelector('[data-view-heading]') || view.querySelector('h1, h2'));
+    if (!heading) return;
+    if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+    heading.focus({ preventScroll: true });
+  }
+  if (baseGoTab) {
+    window.goTab = function (name, fromHistory) {
+      baseGoTab(name);
+      syncNav();
+      if (!fromHistory && tabNames.indexOf(name) > -1 && location.hash !== '#' + name) {
+        history.pushState({ crewTab: name }, '', '#' + name);
+      }
+      if (!fromHistory) focusView(name);
+      updateDock();
+    };
+    all('nav.tabs .tab-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (location.hash !== '#' + btn.dataset.tab) history.pushState({ crewTab: btn.dataset.tab }, '', '#' + btn.dataset.tab);
+        requestAnimationFrame(syncNav);
+        updateDock();
+      });
+    });
+    window.addEventListener('popstate', function (event) {
+      var name = (event.state && event.state.crewTab) || location.hash.slice(1) || 'recruit';
+      if (tabNames.indexOf(name) > -1) window.goTab(name, true);
+    });
+    var fromHash = location.hash.slice(1);
+    if (tabNames.indexOf(fromHash) > -1) window.goTab(fromHash, true);
+  }
+  root.addEventListener('click', function (event) {
+    var target = event.target.closest('[data-go]');
+    if (target && window.goTab) window.goTab(target.getAttribute('data-go'));
+  });
+  window.addEventListener('resize', syncNav);
+  if ('ResizeObserver' in window) {
+    var navSizes = new ResizeObserver(syncNav);
+    all('nav.tabs .tab-btn').forEach(function (b) { navSizes.observe(b); });
+  }
+  syncNav();
+
+  /* ---------- Scroll reveals ---------- */
+  var revealables = all('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('is-in'); io.unobserve(entry.target); }
+      });
+    }, { rootMargin: '0px 0px 10% 0px', threshold: 0 });
+    revealables.forEach(function (el) { io.observe(el); });
+  } else {
+    revealables.forEach(function (el) { el.classList.add('is-in'); });
+  }
+
+  /* ---------- Phone apply bar ---------- */
+  var dock = root.querySelector('[data-dock]');
+  var heroVisible = true, finalVisible = false;
+  function updateDock() {
+    if (!dock) return;
+    var onLanding = !!root.querySelector('#recruit.active');
+    var on = onLanding && !heroVisible && !finalVisible;
+    dock.classList.toggle('is-on', on);
+    dock.setAttribute('aria-hidden', on ? 'false' : 'true');
+    dock.querySelector('button').tabIndex = on ? 0 : -1;
+  }
+  if (dock && 'IntersectionObserver' in window) {
+    var hero = root.querySelector('[data-hero]');
+    var finalCta = root.querySelector('[data-final]');
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.target === hero) heroVisible = e.isIntersecting;
+        if (e.target === finalCta) finalVisible = e.isIntersecting;
+      });
+      updateDock();
+    }, { threshold: 0 }).observe(hero);
+    if (finalCta) new IntersectionObserver(function (entries) {
+      finalVisible = entries[0].isIntersecting; updateDock();
+    }, { threshold: 0 }).observe(finalCta);
+  }
+
+  /* ---------- Tribe picker ---------- */
+  var tablist = root.querySelector('[data-tribe-tabs]');
+  if (tablist) {
+    var tabs = all('[role="tab"]', tablist);
+    var indicator = tablist.querySelector('.crew-tribe-indicator');
+    var panel = root.querySelector('#crew-tribe-panel');
+    var meta = root.querySelector('[data-tribe-meta]');
+    var list = root.querySelector('[data-tribe-missions]');
+    var missions = all('#bonuses .mission').map(function (m) {
+      return {
+        type: text(m, '.mission-type'), tribe: text(m, '.mission-tribe'), title: text(m, 'h3'),
+        brief: text(m, '.brief'), pay: text(m, '.pay'), clock: text(m, '.clock')
+      };
+    });
+    var swapTimer;
+
+    function placeIndicator(tab) {
+      indicator.style.transform = 'translateX(' + tab.offsetLeft + 'px) scaleX(' + tab.offsetWidth + ')';
+    }
+    function markOverflow() {
+      tablist.toggleAttribute('data-more', tablist.scrollLeft + tablist.clientWidth < tablist.scrollWidth - 4);
+    }
+    function fillPanel(tab) {
+      var word = tab.dataset.name;
+      meta.querySelector('[data-tribe-scope]').textContent = tab.dataset.scope;
+      meta.querySelector('[data-tribe-name]').textContent = word;
+      var own = missions.filter(function (m) { return new RegExp('\\b' + word + '\\b', 'i').test(m.tribe); });
+      var open = missions.filter(function (m) { return /all tribes|any tribe/i.test(m.tribe); });
+      list.innerHTML = own.length ? own.slice(0, 3).map(function (m) {
+        return '<li class="crew-mission"><span class="crew-mission-type">' + esc(m.type) + '</span>' +
+          '<h3 class="crew-mission-title">' + esc(m.title) + '</h3>' +
+          '<span class="crew-mission-clock">' + esc(m.clock) + '</span>' +
+          '<p class="crew-mission-brief">' + esc(m.brief) + '</p>' +
+          '<p class="crew-mission-pay">' + esc(m.pay) + '</p></li>';
+      }).join('') : '<li class="crew-missions-empty">No ' + esc(word) + '-only missions this round. The open missions still count for your tribe.</li>';
+      var more = meta.querySelector('[data-tribe-more]');
+      more.hidden = !open.length;
+      more.textContent = open.length ? 'Plus ' + open.length + ' missions open to every tribe.' : '';
+    }
+    function select(tab, opts) {
+      opts = opts || {};
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      panel.setAttribute('aria-labelledby', tab.id);
+      placeIndicator(tab);
+      if (tab.offsetLeft < tablist.scrollLeft || tab.offsetLeft + tab.offsetWidth > tablist.scrollLeft + tablist.clientWidth) {
+        tablist.scrollTo({ left: tab.offsetLeft - 16, behavior: reduceMotion.matches || opts.instant ? 'auto' : 'smooth' });
+      }
+      if (opts.focus) tab.focus();
+      if (opts.remember) { try { localStorage.setItem('hex_crew_tribe', tab.dataset.tribe); } catch (e) {} }
+      clearTimeout(swapTimer);
+      // Keyboard and first paint switch instantly; a click gets a short crossfade.
+      if (opts.instant || reduceMotion.matches) { fillPanel(tab); return; }
+      [meta, list].forEach(function (el) { el.classList.add('is-swapping'); });
+      swapTimer = setTimeout(function () {
+        fillPanel(tab);
+        requestAnimationFrame(function () { [meta, list].forEach(function (el) { el.classList.remove('is-swapping'); }); });
+      }, 140);
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab, { remember: true }); });
+      tab.addEventListener('keydown', function (event) {
+        var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        select(tabs[(next + tabs.length) % tabs.length], { remember: true, focus: true, instant: true });
+      });
+    });
+    tablist.addEventListener('scroll', markOverflow, { passive: true });
+
+    var saved = null;
+    try { saved = localStorage.getItem('hex_crew_tribe'); } catch (e) {}
+    var initial = tabs.filter(function (t) { return t.dataset.tribe === (SERVER_TRIBE || saved); })[0] || tabs[0];
+    select(initial, { instant: true });
+    markOverflow();
+    var reposition = function () {
+      var current = tablist.querySelector('[aria-selected="true"]');
+      if (current) placeIndicator(current);
+      markOverflow();
+    };
+    window.addEventListener('resize', reposition);
+    // Web fonts load without blocking, so re-measure when a tab's width changes.
+    if ('ResizeObserver' in window) {
+      var tribeSizes = new ResizeObserver(reposition);
+      tabs.forEach(function (t) { tribeSizes.observe(t); });
+    }
+  }
+
+  /* ---------- Tier ladder (one equal band per tier) ---------- */
+  var range = root.querySelector('[data-range]');
+  var tiers = all('#tiers .tier-card').map(function (card) {
+    var vals = card.querySelectorAll('.tier-stack-val');
+    var label = text(card, '.tier-threshold');
+    var money = label.match(/\$([\d,]+)/);
+    return {
+      name: text(card, '.tier-name'), label: label, at: money ? Number(money[1].replace(/,/g, '')) : 0,
+      comm: vals[0] ? text(vals[0]) : '', aud: vals[1] ? text(vals[1]) : '',
+      perks: all('.tier-perks li', card).map(function (li) { return text(li); })
+    };
+  });
+  if (range && tiers.length) {
+    var band = Number(range.max) / tiers.length;
+    var top = tiers[tiers.length - 1].at * 1.5;
+    var out = root.querySelector('[data-range-out]');
+    var rungs = root.querySelector('[data-rungs]');
+    var nameEl = root.querySelector('[data-tier-name]');
+    var atEl = root.querySelector('[data-tier-at]');
+    var commEl = root.querySelector('[data-tier-comm]');
+    var audEl = root.querySelector('[data-tier-aud]');
+    var perksEl = root.querySelector('[data-tier-perks]');
+    var current = -1;
+    rungs.innerHTML = tiers.map(function (t) {
+      return '<li class="crew-rung"><b>' + esc(t.name) + '</b><span>' + esc(t.at ? '$' + t.at.toLocaleString('en-AU') : 'Day one') + '</span></li>';
+    }).join('');
+    var rungEls = rungs.querySelectorAll('.crew-rung');
+    var money = function (n) { return '$' + n.toLocaleString('en-AU'); };
+    var pulse = function (el) {
+      if (reduceMotion.matches || !el.animate) return;
+      el.animate([{ transform: 'translateY(30%)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+        { duration: 220, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
+    };
+    function toDollars(pos) {
+      var idx = Math.min(tiers.length - 1, Math.floor(pos / band));
+      var lo = tiers[idx].at, hi = idx < tiers.length - 1 ? tiers[idx + 1].at : top;
+      var raw = lo + ((pos - idx * band) / band) * (hi - lo);
+      var step = raw < 2000 ? 100 : raw < 10000 ? 250 : 1000;
+      return { idx: idx, dollars: Math.round(raw / step) * step };
+    }
+    function update() {
+      var r = toDollars(Number(range.value));
+      out.textContent = money(r.dollars);
+      range.style.setProperty('--fill', (Number(range.value) / Number(range.max)) * 100 + '%');
+      range.setAttribute('aria-valuetext', money(r.dollars) + ', ' + tiers[r.idx].name + ' tier');
+      rungEls.forEach(function (el, i) { el.classList.toggle('is-reached', i <= r.idx); });
+      if (r.idx === current) return;
+      current = r.idx;
+      var t = tiers[r.idx];
+      nameEl.textContent = t.name; atEl.textContent = t.label; commEl.textContent = t.comm; audEl.textContent = t.aud;
+      perksEl.innerHTML = t.perks.map(function (p, i) { return '<li class="is-new" style="--i:' + i + '">' + esc(p) + '</li>'; }).join('');
+      [nameEl, commEl, audEl].forEach(pulse);
+    }
+    range.addEventListener('input', update);
+    update();
+  }
+
+  /* ---------- Clip deck ---------- */
+  var deck = root.querySelector('[data-deck]');
+  if (deck) {
+    var cards = all('#quota .uc-card');
+    deck.innerHTML = cards.map(function (card, i) {
+      var num = String(i + 1).padStart(2, '0');
+      var title = text(card, 'h3');
+      var meta = all('.uc-meta span', card).map(function (s) {
+        var key = text(s, 'strong');
+        return '<span><b>' + esc(key) + '</b> ' + esc(text(s).replace(key, '').trim()) + '</span>';
+      }).join('');
+      var photo = /consuming hex/i.test(title)
+        ? '<span class="crew-clip-photo"><img src="' + ASSET + '/sachet-500.webp" srcset="' + ASSET + '/sachet-500.webp 500w, ' + ASSET + '/sachet-900.webp 900w" sizes="320px" alt="" loading="lazy" decoding="async"></span>'
+        : '';
+      return '<div class="crew-clip' + (photo ? ' has-photo' : '') + '" role="listitem">' +
+        '<div class="crew-clip-inner">' +
+          '<div class="crew-clip-face crew-clip-front">' + photo +
+            '<span class="crew-clip-num" aria-hidden="true">' + num + '</span>' +
+            '<span class="crew-clip-cat" aria-hidden="true">' + esc(text(card, '.uc-pill')) + '</span>' +
+            '<span class="crew-clip-title" aria-hidden="true">' + esc(title) + '</span>' +
+            '<span class="crew-clip-hint" aria-hidden="true">Tap for the brief</span>' +
+            '<button type="button" class="crew-clip-front-btn" aria-expanded="false" aria-controls="crew-clip-' + num + '" aria-label="Clip ' + (i + 1) + ': ' + esc(title) + '. Show the brief"></button>' +
+          '</div>' +
+          '<div class="crew-clip-face crew-clip-back" id="crew-clip-' + num + '" inert>' +
+            '<p>' + esc(text(card, 'p')) + '</p><span class="crew-clip-meta">' + meta + '</span>' +
+            '<button type="button" class="crew-link" data-clip-back>Back to card</button>' +
+          '</div>' +
+        '</div></div>';
+    }).join('');
+    function flip(clip, open) {
+      clip.classList.toggle('is-flipped', open);
+      var front = clip.querySelector('.crew-clip-front'), back = clip.querySelector('.crew-clip-back');
+      var btn = clip.querySelector('.crew-clip-front-btn');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      front.inert = open; back.inert = !open;
+      (open ? back.querySelector('[data-clip-back]') : btn).focus({ preventScroll: true });
+    }
+    deck.addEventListener('click', function (event) {
+      var clip = event.target.closest('.crew-clip');
+      if (!clip) return;
+      if (event.target.closest('.crew-clip-front-btn')) flip(clip, true);
+      else if (event.target.closest('[data-clip-back]')) flip(clip, false);
+    });
+
+    var nav = root.querySelector('[data-deck-nav]');
+    var prev = root.querySelector('[data-deck-prev]');
+    var next = root.querySelector('[data-deck-next]');
+    var count = root.querySelector('[data-deck-count]');
+    var clips = all('.crew-clip', deck);
+    function stepWidth() { return clips[1] ? clips[1].offsetLeft - clips[0].offsetLeft : deck.clientWidth; }
+    function updateDeckNav() {
+      var w = stepWidth();
+      var first = Math.round(deck.scrollLeft / w);
+      var visible = Math.max(1, Math.floor((deck.clientWidth - 2 * clips[0].offsetLeft + 16) / w));
+      var last = Math.min(clips.length, first + visible);
+      count.textContent = (first + 1) + '–' + last + ' of ' + clips.length;
+      prev.disabled = deck.scrollLeft <= 4;
+      next.disabled = deck.scrollLeft + deck.clientWidth >= deck.scrollWidth - 4;
+    }
+    var scrollBy = function (dir) {
+      deck.scrollBy({ left: dir * stepWidth(), behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    };
+    if (nav && clips.length) {
+      nav.hidden = false;
+      prev.addEventListener('click', function () { scrollBy(-1); });
+      next.addEventListener('click', function () { scrollBy(1); });
+      deck.addEventListener('scroll', function () { window.requestAnimationFrame(updateDeckNav); }, { passive: true });
+      window.addEventListener('resize', updateDeckNav);
+      updateDeckNav();
+    }
+  }
+  updateDock();
+})();
+</script>
