@@ -438,6 +438,14 @@ footer strong { color: var(--ink); font-weight: 600; }
   .spark-grid { grid-template-columns: 1fr; }
   .wildcard-grid { grid-template-columns: 1fr 1fr; }
 }
+/* Phones: stack the multi-column grids so cards don't run off the screen. */
+@media (max-width: 560px) {
+  .stats-grid, .tribe-row, .tier-grid, .uc-grid, .card-grid-3, .wildcard-grid { grid-template-columns: 1fr; }
+  /* This card sets its columns inline, so it needs !important to stack. */
+  .view .card[style*="repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
+}
+/* Headings focused by tab navigation aren't controls, so no focus ring. */
+.hex-crew-v4 .view h1[tabindex="-1"]:focus, .hex-crew-v4 .view h2[tabindex="-1"]:focus { outline: none; }
 
 .brand-logo-exact { display:block; width:88px; height:auto; object-fit:contain; flex:0 0 auto; }
 a.url-bar { text-decoration:none; color:var(--mute); }
@@ -1139,7 +1147,7 @@ a.url-bar:focus-visible, .btn:focus-visible, .tab-btn:focus-visible { outline:2p
   <div class="shell">
     <div class="callout" style="margin-bottom:24px;"><strong>Programme model.</strong> The tier ladder below is the supplied target structure, not the current GoAffPro configuration. Live affiliate defaults are 15% commission and a 15% coupon.</div>
     <span class="eyebrow">The ladder</span>
-    <h2 class="display">Sick % for you.<br/>Sick % for your audience.</h2>
+    <h2 class="display">Your cut climbs. So does their&nbsp;discount.</h2>
     <p class="lede">Four tiers. Climb on lifetime sales. Each step up raises your commission and your audience's discount. Reactor tier customers save 30%. That's a real "your code" discount you'll be proud to share.</p>
 
     <div class="tier-grid">
